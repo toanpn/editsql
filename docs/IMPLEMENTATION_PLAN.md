@@ -49,14 +49,33 @@
     *   Create an API route (`/api/edit`) that accepts table name, row identifier (e.g., `ROWID` or primary key), column name, and the new value.
     *   Construct and execute an `UPDATE` SQL statement using the SQLite library.
     *   Return success/failure status.
-- [ ] 11. **In-Place Editing (Frontend):**
+- [x] 11. **In-Place Editing (Frontend):**
     *   Make table cells editable (e.g., replace `<td>` content with an `<input>` on click).
     *   On blur (losing focus) of the input, call the `/api/edit` endpoint with the changes.
     *   Update the local state to reflect the change immediately (optimistic update) or refetch the data.
 
+- [ ] 12. **Add New Row API Route (Backend):**
+    *   Create an API route (`/api/insert`) that accepts table name and an object containing column names and values for the new row.
+    *   Analyze the table schema to handle special cases:
+        *   Primary key constraints: Allow SQLite to auto-generate values for `INTEGER PRIMARY KEY AUTOINCREMENT` columns.
+        *   Detect and handle required (NOT NULL) columns without defaults.
+        *   Validate data types to prevent type mismatch errors.
+    *   Construct and execute an `INSERT INTO` SQL statement using the SQLite library.
+    *   Return success status with the newly created row data (including any auto-generated values).
+    *   Handle and return appropriate error messages for constraint violations (unique constraints, foreign keys).
+
+- [ ] 13. **Add New Row UI (Frontend):**
+    *   Add an "Add Row" button above the data table.
+    *   On click, show a form or modal with input fields for each column.
+    *   Provide appropriate input types based on column data types.
+    *   Include validation for required fields and basic type checking.
+    *   Submit form data to the `/api/insert` endpoint.
+    *   On success, update the table view to include the new row (may require pagination adjustments if on the last page).
+    *   Display user-friendly error messages for constraint violations (e.g., "This username already exists").
+
 **Phase 4: SQL CLI & Export**
 
-- [ ] 12. **SQL Execution API Route (Backend):**
+- [ ] 14. **SQL Execution API Route (Backend):**
     *   Create an API route (`/api/sql`) that accepts a raw SQL string.
     *   Use the SQLite library to execute the command against the session's database file.
     *   Handle different command types:
@@ -64,25 +83,25 @@
         *   `UPDATE`/`DELETE`/`CREATE`: Return affected row count or success status.
         *   Errors: Catch errors from the SQLite library and return formatted error messages.
     *   *Security:* Add basic validation to prevent excessively complex or potentially harmful queries beyond the allowed `SELECT`, `UPDATE`, `DELETE`, `CREATE TABLE`.
-- [ ] 13. **SQL CLI Component (Frontend):**
+- [ ] 15. **SQL CLI Component (Frontend):**
     *   Create a `Textarea` component for SQL input.
     *   Add a "Run SQL" button that calls the `/api/sql` endpoint.
     *   Display results:
         *   Render a table for `SELECT` results.
         *   Show messages for other commands or errors.
     *   (Optional) Integrate a simple syntax highlighting library if time permits.
-- [ ] 14. **File Export API Route (Backend):**
+- [ ] 16. **File Export API Route (Backend):**
     *   Create an API route (`/api/export`).
     *   Read the (potentially modified) database file associated with the session.
     *   Set appropriate headers (`Content-Disposition: attachment; filename="original_filename_edited.db"`, `Content-Type: application/vnd.sqlite3` or `application/octet-stream`).
     *   Stream the file content back to the client.
-- [ ] 15. **Export Button (Frontend):**
+- [ ] 17. **Export Button (Frontend):**
     *   Add an "Export" button.
     *   On click, trigger a download by navigating the browser to the `/api/export` endpoint (e.g., using `window.location.href` or creating an anchor tag).
 
 **Phase 5: Styling, Refinement & Deployment**
 
-- [ ] 16. **Styling:** Apply Tailwind and `shadcn/ui` utilities consistently across all components for a clean look and feel.
-- [ ] 17. **Error Handling:** Implement robust error handling on both frontend and backend (network errors, database errors, validation errors). Display user-friendly error messages.
-- [ ] 18. **Testing:** Manually test all features with various SQLite files and edge cases (empty tables, large datasets within limits, different data types, invalid SQL).
-- [ ] 19. **Deployment:** Deploy the Next.js application to a platform like Vercel or Netlify. Configure necessary environment variables if any. 
+- [ ] 18. **Styling:** Apply Tailwind and `shadcn/ui` utilities consistently across all components for a clean look and feel.
+- [ ] 19. **Error Handling:** Implement robust error handling on both frontend and backend (network errors, database errors, validation errors). Display user-friendly error messages.
+- [ ] 20. **Testing:** Manually test all features with various SQLite files and edge cases (empty tables, large datasets within limits, different data types, invalid SQL).
+- [ ] 21. **Deployment:** Deploy the Next.js application to a platform like Vercel or Netlify. Configure necessary environment variables if any. 

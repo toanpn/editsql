@@ -1,4 +1,3 @@
-
 # SQLite Editor WebApp - MVP Specifications
 
 ## 1. Overview
@@ -28,6 +27,12 @@ A web application that allows users to upload SQLite files (`.sqlite` or `.db`),
 - Allows users to edit data directly within the table cells.
 - **Auto-save**: Changes are saved automatically when the user leaves the input cell (blur event).
 - No confirmation or warning required before saving.
+- **Add New Row**: Provides a UI to add new records to the table:
+  - "Add Row" button above the data table.
+  - Form/modal with fields for each column.
+  - Automatic handling of primary keys and constraints.
+  - Validation for required fields and data types.
+  - Clear error messages for constraint violations.
 
 #### 2.3.2. Mode 2: SQL CLI
 
