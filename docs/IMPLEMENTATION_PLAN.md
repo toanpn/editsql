@@ -101,7 +101,7 @@
 
 **Phase 5: Styling, Refinement & Deployment**
 
-- [ ] 18. **Styling:** Apply Tailwind and `shadcn/ui` utilities consistently across all components for a clean look and feel.
+- [x] 18. **Styling:** Apply Tailwind and `shadcn/ui` utilities consistently across all components for a clean look and feel.
 - [ ] 19. **Error Handling:** Implement robust error handling on both frontend and backend (network errors, database errors, validation errors). Display user-friendly error messages.
 - [ ] 20. **Testing:** Manually test all features with various SQLite files and edge cases (empty tables, large datasets within limits, different data types, invalid SQL).
 - [ ] 21. **Deployment:** Deploy the Next.js application to a platform like Vercel or Netlify. Configure necessary environment variables if any. 

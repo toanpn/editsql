@@ -11,7 +11,10 @@ import SidebarTables from "@/components/SidebarTables";
 import TableViewer from "@/components/TableViewer";
 import SQLCli from "@/components/SQLCli";
 import ExportButton from "@/components/ExportButton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Database } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   // State for the uploaded file and tables
@@ -82,25 +85,32 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen flex flex-col overflow-hidden">
+    <main className="flex h-screen flex-col overflow-hidden">
       {/* Header */}
-      <header className="border-b p-4 flex justify-between items-center">
-        <h1 className="font-bold text-xl">SQLite Editor WebApp</h1>
-        <ExportButton className={!isFileUploaded ? 'opacity-50 pointer-events-none' : ''} />
+      <header className="border-b bg-gradient-to-r from-background to-muted p-4 flex justify-between items-center shadow-sm">
+        <div className="flex items-center gap-2">
+          <Database className="h-5 w-5 text-primary" />
+          <h1 className="font-bold text-xl">SQLite Editor WebApp</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <ExportButton className={cn(
+            "transition-all duration-200",
+            !isFileUploaded && "opacity-50 pointer-events-none"
+          )} />
+        </div>
       </header>
 
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         {!isFileUploaded ? (
-          <div className="h-full flex flex-col items-center justify-center p-8">
+          <div className="h-full flex flex-col items-center justify-center p-8 max-w-3xl mx-auto">
             {error && (
-              <div className="mb-6 w-full max-w-md p-4 bg-destructive/10 border border-destructive rounded-md text-destructive flex items-start gap-2">
-                <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium">Error</p>
-                  <p className="text-sm">{error}</p>
-                </div>
-              </div>
+              <Alert variant="destructive" className="mb-6 w-full">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
             <FileUploader onFileUpload={handleFileUpload} />
           </div>
@@ -110,7 +120,7 @@ export default function Home() {
             className="min-h-full"
           >
             {/* Sidebar */}
-            <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
+            <ResizablePanel defaultSize={20} minSize={15} maxSize={30} className="border-r bg-muted/30">
               <SidebarTables 
                 tables={tables} 
                 onSelectTable={handleTableSelect} 
@@ -119,7 +129,7 @@ export default function Home() {
               />
             </ResizablePanel>
 
-            <ResizableHandle withHandle />
+            <ResizableHandle withHandle className="bg-border" />
 
             {/* Main Panel */}
             <ResizablePanel defaultSize={80}>
@@ -128,21 +138,23 @@ export default function Home() {
                 <div className="border-b flex">
                   <button
                     onClick={() => setActiveView("table")}
-                    className={`px-4 py-2 text-sm font-medium ${
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors relative",
                       activeView === "table"
-                        ? "border-b-2 border-primary"
-                        : "text-muted-foreground"
-                    }`}
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
                   >
                     Table View
                   </button>
                   <button
                     onClick={() => setActiveView("sql")}
-                    className={`px-4 py-2 text-sm font-medium ${
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors relative",
                       activeView === "sql"
-                        ? "border-b-2 border-primary"
-                        : "text-muted-foreground"
-                    }`}
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
                   >
                     SQL CLI
                   </button>
@@ -166,8 +178,8 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t p-2 text-center text-xs text-muted-foreground">
-        SQLite Editor WebApp - MVP Version
+      <footer className="border-t py-2 px-4 text-center text-xs text-muted-foreground bg-muted/30">
+        <p>SQLite Editor WebApp - MVP Version</p>
       </footer>
     </main>
   );

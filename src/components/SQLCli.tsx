@@ -150,9 +150,8 @@ export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
       toast({
         title: "Query executed",
         description: data.message,
-        variant: "default",
-        className: "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800",
-        action: <CheckCircle2 className="h-5 w-5 text-green-500" />
+        variant: "success",
+        action: <CheckCircle2 className="h-5 w-5 text-green-500 dark:text-green-300" />
       });
     } catch (error) {
       console.error("Error executing SQL query:", error);

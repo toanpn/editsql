@@ -7,7 +7,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 5000 // 5 seconds 
 
 type ToasterToast = ToastProps & {
   id: string
@@ -57,10 +57,15 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
-const addToRemoveQueue = (toastId: string) => {
+const clearToastTimeout = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
-    return
+    clearTimeout(toastTimeouts.get(toastId));
+    toastTimeouts.delete(toastId);
   }
+};
+
+const addToRemoveQueue = (toastId: string, duration = TOAST_REMOVE_DELAY) => {
+  clearToastTimeout(toastId);
 
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId)
@@ -68,7 +73,7 @@ const addToRemoveQueue = (toastId: string) => {
       type: "REMOVE_TOAST",
       toastId: toastId,
     })
-  }, TOAST_REMOVE_DELAY)
+  }, duration)
 
   toastTimeouts.set(toastId, timeout)
 }
@@ -98,7 +103,7 @@ export const reducer = (state: State, action: Action): State => {
         addToRemoveQueue(toastId)
       } else {
         state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id)
+          addToRemoveQueue(toast.id, toast.duration)
         })
       }
 
@@ -143,6 +148,7 @@ type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast) {
   const id = genId()
+  const duration = props.duration || TOAST_REMOVE_DELAY;
 
   const update = (props: ToasterToast) =>
     dispatch({
@@ -157,6 +163,7 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
+      duration,
       onOpenChange: (open: boolean) => {
         if (!open) dismiss()
       },

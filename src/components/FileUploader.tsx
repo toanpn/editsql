@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Upload, Database } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
 // Maximum file size: 10MB (in bytes)
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -94,43 +96,55 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center space-y-4">
+    <div className="w-full flex flex-col items-center space-y-6">
+      <div className="text-center mb-2">
+        <h2 className="text-2xl font-bold mb-2">Open SQLite Database</h2>
+        <p className="text-muted-foreground">
+          Upload a SQLite database file to view and edit its contents
+        </p>
+      </div>
+
       <div
-        className={`w-full border-2 border-dashed rounded-lg p-8 h-32 flex flex-col items-center justify-center transition-colors ${
+        className={cn(
+          "w-full border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center transition-all duration-200 gap-4",
           isDragging
-            ? "border-primary bg-primary/10"
+            ? "border-primary bg-primary/5 shadow-md"
             : error
-            ? "border-destructive bg-destructive/10"
+            ? "border-destructive bg-destructive/5"
             : selectedFile
-            ? "border-green-500 bg-green-500/10"
-            : "border-gray-300 dark:border-gray-700"
-        }`}
+            ? "border-green-500 bg-green-500/5"
+            : "border-border hover:border-muted-foreground/50 hover:bg-muted/50"
+        )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         {selectedFile ? (
-          <div className="text-center">
-            <p className="font-medium mb-1">{selectedFile.name}</p>
-            <p className="text-xs text-muted-foreground">
+          <div className="text-center flex flex-col items-center">
+            <Database className="h-10 w-10 text-primary mb-4" />
+            <p className="font-medium text-lg mb-1">{selectedFile.name}</p>
+            <p className="text-sm text-muted-foreground">
               {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
             </p>
           </div>
         ) : (
           <>
-            <p className="text-center mb-2">
-              Drag & drop your SQLite file (.sqlite, .db)
+            <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+            <p className="text-center text-lg font-medium">
+              Drag & drop your SQLite file here
             </p>
-            <p className="text-xs text-muted-foreground">Maximum file size: 10MB</p>
+            <p className="text-sm text-muted-foreground">
+              Supported formats: {ALLOWED_FILE_TYPES.join(", ")} (Max: 10MB)
+            </p>
           </>
         )}
       </div>
 
       {error && (
-        <div className="flex items-center text-destructive text-sm gap-2">
-          <AlertCircle className="h-4 w-4" />
-          <span>{error}</span>
-        </div>
+        <Alert variant="destructive" className="w-full max-w-md">
+          <AlertCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <div className="flex items-center w-full max-w-md">
@@ -143,6 +157,7 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
         />
         <Button
           className="w-full"
+          size="lg"
           onClick={() => document.getElementById("file-upload")?.click()}
           disabled={isUploading}
         >

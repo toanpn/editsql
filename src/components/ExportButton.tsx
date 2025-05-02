@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, FileDown } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 
 interface ExportButtonProps {
   className?: string;
@@ -30,7 +31,7 @@ export const ExportButton = ({ className = "" }: ExportButtonProps) => {
       toast({
         title: "Download started",
         description: "Your database file is being downloaded",
-        variant: "default",
+        duration: 3000,
         className: "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800",
       });
       
@@ -45,9 +46,10 @@ export const ExportButton = ({ className = "" }: ExportButtonProps) => {
       
       // Show error toast
       toast({
-        title: "Error",
+        title: "Export Failed",
         description: error instanceof Error ? error.message : 'Failed to export database',
         variant: "destructive",
+        duration: 5000,
       });
       
       setIsExporting(false);
@@ -58,17 +60,23 @@ export const ExportButton = ({ className = "" }: ExportButtonProps) => {
     <Button
       onClick={handleExport}
       disabled={isExporting}
-      className={`bg-green-600 hover:bg-green-700 text-white ${className}`}
+      variant="outline"
+      size="sm"
+      className={cn(
+        "border-green-600/50 hover:border-green-600 text-green-600 hover:text-green-700 hover:bg-green-50/50 dark:border-green-500/70 dark:text-green-500 dark:hover:text-green-400 dark:hover:bg-green-950/50",
+        isExporting && "opacity-80", 
+        className
+      )}
     >
       {isExporting ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Exporting...
+          <span>Exporting...</span>
         </>
       ) : (
         <>
-          <Download className="mr-2 h-4 w-4" />
-          Export Database
+          <FileDown className="mr-2 h-4 w-4" />
+          <span>Export Database</span>
         </>
       )}
     </Button>
