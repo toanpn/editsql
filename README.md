@@ -17,33 +17,35 @@ A web application to upload, view, edit, query, and export SQLite database files
 
 | Component | Technology |
 |-----------|------------|
-| Frontend | React + Next.js (TypeScript) |
-| Styling/UI | Tailwind CSS + Shadcn/ui |
+| Frontend | React 19 + Next.js 15 (TypeScript) |
+| Styling/UI | Tailwind CSS v4 + Radix UI components |
 | Database | better-sqlite3 |
-| State | React Context |
-| Notifications | Sonner |
+| State Management | React hooks and props |
 | Hosting | Vercel / Netlify compatible |
 
 ## 📂 Project Structure
 
 ```plaintext
 sqlite-editor-webapp/
-├── app/
-│   ├── api/         # API routes (upload, tables, data, edit, sql, export, delete)
-│   ├── components/  # React components (FileUploader, SidebarTables, TableViewer, SQLCli, ExportButton)
-│   ├── context/     # AppContext for state management
-│   ├── styles/      # Tailwind and UI styles
-│   ├── page.tsx     # Main page
-│   └── layout.tsx   # Layout file
-├── public/
-├── sqlite-handler/  # SQLiteService.ts and utils
-├── types/           # TypeScript types
-├── tmp/             # Temporary uploaded files (auto-deleted)
-├── .env
+├── src/
+│   ├── app/
+│   │   ├── api/         # API routes (upload, tables, data, edit, sql, export, insert)
+│   │   ├── globals.css  # Global styles
+│   │   ├── page.tsx     # Main page
+│   │   └── layout.tsx   # Layout file
+│   ├── components/      # React components (FileUploader, SidebarTables, TableViewer, SQLCli, ExportButton)
+│   │   └── ui/          # UI components
+│   └── lib/             # Utility functions
+├── public/              # Static assets
+├── tmp/                 # Temporary uploaded files (auto-deleted)
+├── docs/                # Documentation
 ├── tailwind.config.ts
 ├── tsconfig.json
-├── next.config.js
-├── package.json
+├── next.config.ts
+├── postcss.config.mjs
+├── eslint.config.mjs
+├── components.json      # Shadcn UI components config
+└── package.json
 
 ```
 
@@ -51,7 +53,7 @@ sqlite-editor-webapp/
 
 ### Prerequisites
 
-- Node.js (v18 or later)
+- Node.js (v20 or later)
 - npm or yarn
 
 ### Installation
