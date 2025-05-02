@@ -35,12 +35,12 @@
 
 **Phase 3: Data Display & In-Place Editing**
 
-- [ ] 8.  **Table Data API Route (Backend):**
+- [x] 8.  **Table Data API Route (Backend):**
     *   Create an API route (`/api/data/[tableName]`) that accepts a table name and optional pagination parameters (page, limit=50).
     *   Use the SQLite library to execute a `SELECT * FROM [tableName] LIMIT ? OFFSET ?` query.
     *   Include logic to fetch column names/types if needed for the table header.
     *   Return the paginated data and total row count (for pagination controls) as JSON.
-- [ ] 9.  **Data Table Component (Frontend):**
+- [x] 9.  **Data Table Component (Frontend):**
     *   When a table name is clicked in the sidebar, call the `/api/data/[tableName]` endpoint.
     *   Use `shadcn/ui`'s `Table` component to display the fetched data.
     *   Implement pagination controls based on the total row count and current page.

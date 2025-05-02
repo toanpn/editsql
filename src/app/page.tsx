@@ -75,13 +75,10 @@ export default function Home() {
 
   // Handle table selection
   const handleTableSelect = (tableName: string) => {
+    // Clear any previous table selection and set the new one
     setSelectedTable(tableName);
-    // In Phase 3, we'll implement the actual table data fetching
-    // For now, just simulate loading state
+    // Set loading state to true - the TableViewer component will handle loading state internally
     setIsTableDataLoading(true);
-    setTimeout(() => {
-      setIsTableDataLoading(false);
-    }, 500);
   };
 
   return (
