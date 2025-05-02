@@ -23,7 +23,7 @@
     *   Create an API route (`/api/upload`) to receive the uploaded file (using `multipart/form-data`).
     *   Implement server-side validation (type, size).
     *   Temporarily store the uploaded file on the server (e.g., in a temporary directory or in memory if small enough, keeping file lifecycle in mind - session-based storage). Associate the stored file with the user's session.
-- [ ] 6.  **Database Reading API Route (Backend):**
+- [x] 6.  **Database Reading API Route (Backend):**
     *   Create an API route (`/api/tables`) that takes the session's associated file path.
     *   Use the SQLite library (`better-sqlite3`) to open the database file.
     *   Query the `sqlite_master` table to get a list of user tables.

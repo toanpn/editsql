@@ -46,13 +46,21 @@ export default function Home() {
       // Store the session ID in localStorage for future use
       if (data.sessionId) {
         localStorage.setItem('sessionId', data.sessionId);
+        
+        // Fetch the table list using the newly created session ID
+        const tablesResponse = await fetch(`/api/tables?sessionId=${data.sessionId}`);
+        const tablesData = await tablesResponse.json();
+        
+        if (!tablesResponse.ok) {
+          throw new Error(tablesData.error || 'Failed to load tables');
+        }
+        
+        // Set the tables in state
+        setTables(tablesData.tables);
       }
       
       // Set file as uploaded
       setIsFileUploaded(true);
-      
-      // In the next phase, we'll fetch the tables list here
-      
     } catch (error) {
       console.error("Error uploading file:", error);
       // TODO: Display error message to the user
