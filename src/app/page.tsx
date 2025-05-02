@@ -86,7 +86,7 @@ export default function Home() {
       {/* Header */}
       <header className="border-b p-4 flex justify-between items-center">
         <h1 className="font-bold text-xl">SQLite Editor WebApp</h1>
-        <ExportButton isEnabled={isFileUploaded} />
+        <ExportButton className={!isFileUploaded ? 'opacity-50 pointer-events-none' : ''} />
       </header>
 
       {/* Main Content */}

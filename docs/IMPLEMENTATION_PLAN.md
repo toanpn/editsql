@@ -90,12 +90,12 @@
         *   Render a table for `SELECT` results.
         *   Show messages for other commands or errors.
     *   (Optional) Integrate a simple syntax highlighting library if time permits.
-- [ ] 16. **File Export API Route (Backend):**
+- [x] 16. **File Export API Route (Backend):**
     *   Create an API route (`/api/export`).
     *   Read the (potentially modified) database file associated with the session.
     *   Set appropriate headers (`Content-Disposition: attachment; filename="original_filename_edited.db"`, `Content-Type: application/vnd.sqlite3` or `application/octet-stream`).
     *   Stream the file content back to the client.
-- [ ] 17. **Export Button (Frontend):**
+- [x] 17. **Export Button (Frontend):**
     *   Add an "Export" button.
     *   On click, trigger a download by navigating the browser to the `/api/export` endpoint (e.g., using `window.location.href` or creating an anchor tag).
 
