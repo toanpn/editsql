@@ -75,7 +75,7 @@
 
 **Phase 4: SQL CLI & Export**
 
-- [ ] 14. **SQL Execution API Route (Backend):**
+- [x] 14. **SQL Execution API Route (Backend):**
     *   Create an API route (`/api/sql`) that accepts a raw SQL string.
     *   Use the SQLite library to execute the command against the session's database file.
     *   Handle different command types:
@@ -83,7 +83,7 @@
         *   `UPDATE`/`DELETE`/`CREATE`: Return affected row count or success status.
         *   Errors: Catch errors from the SQLite library and return formatted error messages.
     *   *Security:* Add basic validation to prevent excessively complex or potentially harmful queries beyond the allowed `SELECT`, `UPDATE`, `DELETE`, `CREATE TABLE`.
-- [ ] 15. **SQL CLI Component (Frontend):**
+- [x] 15. **SQL CLI Component (Frontend):**
     *   Create a `Textarea` component for SQL input.
     *   Add a "Run SQL" button that calls the `/api/sql` endpoint.
     *   Display results:
