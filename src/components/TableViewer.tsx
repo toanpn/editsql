@@ -9,8 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DatabaseIcon, Loader2 } from "lucide-react";
 
-export const TableViewer = () => {
+interface TableViewerProps {
+  selectedTable?: string | null;
+  isLoading?: boolean;
+}
+
+export const TableViewer = ({ selectedTable = null, isLoading = false }: TableViewerProps) => {
   // This is a placeholder. Real implementation will come in Phase 3
   const mockColumns = ["id", "name", "created_at"];
   const mockData = [
@@ -19,12 +25,34 @@ export const TableViewer = () => {
     { id: 3, name: "Example 3", created_at: "2023-01-03" },
   ];
 
+  // If no table is selected, show a message
+  if (!selectedTable) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
+        <DatabaseIcon className="h-12 w-12 mb-4 opacity-20" />
+        <h3 className="text-lg font-medium mb-2">No Table Selected</h3>
+        <p>Select a table from the sidebar to view its data</p>
+      </div>
+    );
+  }
+
+  // If loading, show a loading indicator
+  if (isLoading) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin mb-4" />
+        <p className="text-muted-foreground">Loading table data...</p>
+      </div>
+    );
+  }
+
+  // Otherwise, show the table data
   return (
     <div className="h-full flex flex-col">
       <div className="py-2 px-4 border-b">
-        <h2 className="font-semibold">Table Data</h2>
+        <h2 className="font-semibold">Table: {selectedTable}</h2>
         <p className="text-xs text-muted-foreground">
-          Select a table from the sidebar to view data
+          Viewing data for {selectedTable}
         </p>
       </div>
 

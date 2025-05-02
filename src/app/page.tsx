@@ -11,6 +11,7 @@ import SidebarTables from "@/components/SidebarTables";
 import TableViewer from "@/components/TableViewer";
 import SQLCli from "@/components/SQLCli";
 import ExportButton from "@/components/ExportButton";
+import { AlertCircle } from "lucide-react";
 
 export default function Home() {
   // State for the uploaded file and tables
@@ -20,11 +21,14 @@ export default function Home() {
   const [tables, setTables] = useState<{ name: string }[]>([]);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTableDataLoading, setIsTableDataLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Handle file upload
   const handleFileUpload = async (file: File) => {
     setIsLoading(true);
     setUploadedFile(file);
+    setError(null);
     
     try {
       // Create a FormData object and append the file
@@ -63,7 +67,7 @@ export default function Home() {
       setIsFileUploaded(true);
     } catch (error) {
       console.error("Error uploading file:", error);
-      // TODO: Display error message to the user
+      setError(error instanceof Error ? error.message : 'Failed to upload file');
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +77,11 @@ export default function Home() {
   const handleTableSelect = (tableName: string) => {
     setSelectedTable(tableName);
     // In Phase 3, we'll implement the actual table data fetching
+    // For now, just simulate loading state
+    setIsTableDataLoading(true);
+    setTimeout(() => {
+      setIsTableDataLoading(false);
+    }, 500);
   };
 
   return (
@@ -86,7 +95,16 @@ export default function Home() {
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         {!isFileUploaded ? (
-          <div className="h-full flex items-center justify-center p-8">
+          <div className="h-full flex flex-col items-center justify-center p-8">
+            {error && (
+              <div className="mb-6 w-full max-w-md p-4 bg-destructive/10 border border-destructive rounded-md text-destructive flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium">Error</p>
+                  <p className="text-sm">{error}</p>
+                </div>
+              </div>
+            )}
             <FileUploader onFileUpload={handleFileUpload} />
           </div>
         ) : (
@@ -99,6 +117,8 @@ export default function Home() {
               <SidebarTables 
                 tables={tables} 
                 onSelectTable={handleTableSelect} 
+                selectedTable={selectedTable}
+                isLoading={isLoading}
               />
             </ResizablePanel>
 
@@ -133,7 +153,14 @@ export default function Home() {
 
                 {/* Active View */}
                 <div className="flex-1 overflow-hidden">
-                  {activeView === "table" ? <TableViewer /> : <SQLCli />}
+                  {activeView === "table" ? (
+                    <TableViewer 
+                      selectedTable={selectedTable} 
+                      isLoading={isTableDataLoading} 
+                    />
+                  ) : (
+                    <SQLCli />
+                  )}
                 </div>
               </div>
             </ResizablePanel>

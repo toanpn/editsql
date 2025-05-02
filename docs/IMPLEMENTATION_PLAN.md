@@ -28,7 +28,7 @@
     *   Use the SQLite library (`better-sqlite3`) to open the database file.
     *   Query the `sqlite_master` table to get a list of user tables.
     *   Return the list of table names as JSON.
-- [ ] 7.  **Table List Display (Frontend):**
+- [x] 7.  **Table List Display (Frontend):**
     *   When a file is successfully uploaded, call the `/api/tables` endpoint.
     *   Display the fetched table names in the left sidebar.
     *   Make table names clickable.
