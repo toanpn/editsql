@@ -45,7 +45,7 @@
     *   Use `shadcn/ui`'s `Table` component to display the fetched data.
     *   Implement pagination controls based on the total row count and current page.
     *   Implement basic Search/Filter UI elements (input fields per column or a general search box). Client-side filtering can be done first for simplicity, or add backend filtering logic to the API route later.
-- [ ] 10. **In-Place Editing API Route (Backend):**
+- [x] 10. **In-Place Editing API Route (Backend):**
     *   Create an API route (`/api/edit`) that accepts table name, row identifier (e.g., `ROWID` or primary key), column name, and the new value.
     *   Construct and execute an `UPDATE` SQL statement using the SQLite library.
     *   Return success/failure status.
