@@ -121,8 +121,11 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
   const [newRowData, setNewRowData] = useState<Record<string, any>>({});
   const [isAddingRow, setIsAddingRow] = useState(false);
   const [addRowErrors, setAddRowErrors] = useState<Record<string, string>>({});
+  
+  // Add a state to track when a row was added (used to trigger reload)
+  const [lastRowAddedAt, setLastRowAddedAt] = useState<number | null>(null);
 
-  // Fetch table data when a table is selected or pagination changes
+  // Fetch table data when a table is selected or pagination changes or a row is added
   useEffect(() => {
     if (!selectedTable) {
       setTableData(null);
@@ -146,7 +149,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
 
         // Fetch data from our API route with pagination parameters
         const response = await fetch(
-          `/api/data/${selectedTable}?page=${currentPage}&limit=${pageSize}&sessionId=${sessionId}`
+          `/api/data/${selectedTable}?page=${currentPage}&limit=${pageSize}&sessionId=${sessionId}${lastRowAddedAt ? `&_t=${lastRowAddedAt}` : ''}`
         );
 
         if (!response.ok) {
@@ -165,7 +168,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
     };
 
     fetchTableData();
-  }, [selectedTable, currentPage, pageSize]);
+  }, [selectedTable, currentPage, pageSize, lastRowAddedAt]);
 
   // Focus the input when editing a cell
   useEffect(() => {
@@ -303,16 +306,41 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
     setEditError(null);
 
     try {
-      // Find primary key column for the row identifier
-      const pkColumn = tableData.columns.find(col => col.pk === 1);
-      if (!pkColumn) {
-        // If no PK, use the first column as identifier (not ideal but a fallback)
-        throw new Error("No primary key found for this table");
-      }
-
       // Get the row data
       const row = tableData.data[editingCell.rowIndex];
-      const pkValue = row[pkColumn.name];
+      
+      // Find primary key column for the row identifier
+      const pkColumn = tableData.columns.find(col => col.pk === 1);
+      
+      // Create a row identifier - either using primary key or fallback to using all columns
+      let rowIdentifier;
+      
+      if (pkColumn) {
+        // If we have a primary key, use it
+        rowIdentifier = {
+          column: pkColumn.name,
+          value: row[pkColumn.name]
+        };
+      } else {
+        // Fallback: Create a composite identifier using all column values except the one being edited
+        // This creates a WHERE clause with all columns to uniquely identify the row
+        const identifierColumns = tableData.columns
+          .filter(col => col.name !== editingCell.columnName)
+          .map(col => ({
+            column: col.name,
+            value: row[col.name]
+          }));
+        
+        if (identifierColumns.length === 0) {
+          setEditError("Cannot edit this table - no way to uniquely identify rows");
+          setIsEditing(false);
+          return;
+        }
+        
+        rowIdentifier = {
+          compositeIdentifier: identifierColumns
+        };
+      }
 
       // Get session ID
       const sessionId = localStorage.getItem('sessionId');
@@ -328,10 +356,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
         },
         body: JSON.stringify({
           tableName: tableData.tableName,
-          rowIdentifier: {
-            column: pkColumn.name,
-            value: pkValue,
-          },
+          rowIdentifier,
           columnName: editingCell.columnName,
           newValue: validation.formattedValue,
         }),
@@ -558,6 +583,10 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
         className: "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800",
         action: <CheckCircle2 className="h-5 w-5 text-green-500" />
       });
+      
+      // Set the timestamp to trigger a reload
+      setLastRowAddedAt(Date.now());
+      
     } catch (error) {
       console.error("Error adding row:", error);
       toast({

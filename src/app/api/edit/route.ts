@@ -6,6 +6,12 @@ import fs from 'fs';
 // Path to the temporary directory where SQLite files are stored
 const TMP_DIR = path.join(process.cwd(), 'tmp');
 
+// Type for composite identifier
+interface IdentifierColumn {
+  column: string;
+  value: any;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Get the request body
@@ -27,9 +33,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!rowIdentifier || !rowIdentifier.column || rowIdentifier.value === undefined) {
+    // Check that rowIdentifier is valid (either single column or composite)
+    if (!rowIdentifier || 
+        (!rowIdentifier.compositeIdentifier && (!rowIdentifier.column || rowIdentifier.value === undefined))) {
       return NextResponse.json(
-        { error: 'Row identifier (column and value) is required' },
+        { error: 'Valid row identifier is required' },
+        { status: 400 }
+      );
+    }
+
+    // If using composite identifier, verify it's an array with at least one identifier
+    if (rowIdentifier.compositeIdentifier && 
+        (!Array.isArray(rowIdentifier.compositeIdentifier) || rowIdentifier.compositeIdentifier.length === 0)) {
+      return NextResponse.json(
+        { error: 'Composite identifier must be a non-empty array' },
         { status: 400 }
       );
     }
@@ -84,8 +101,15 @@ export async function POST(req: NextRequest) {
       }
 
       // Validate that the column exists in the table
-      const columnInfo = db.prepare(`PRAGMA table_info(${tableName})`).all();
-      const columnExists = columnInfo.some((col: any) => col.name === columnName);
+      const columnInfo = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{
+        name: string;
+        type: string;
+        notnull: number;
+        dflt_value: string | null;
+        pk: number;
+      }>;
+      
+      const columnExists = columnInfo.some(col => col.name === columnName);
       
       if (!columnExists) {
         db.close();
@@ -95,38 +119,71 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Check if the identifier column exists
-      const identifierColumnExists = columnInfo.some((col: any) => col.name === rowIdentifier.column);
+      // If using a single column identifier, check if it exists
+      if (rowIdentifier.column) {
+        const identifierColumnExists = columnInfo.some(col => col.name === rowIdentifier.column);
+        
+        if (!identifierColumnExists) {
+          db.close();
+          return NextResponse.json(
+            { error: 'Identifier column not found' },
+            { status: 404 }
+          );
+        }
+      }
       
-      if (!identifierColumnExists) {
-        db.close();
-        return NextResponse.json(
-          { error: 'Identifier column not found' },
-          { status: 404 }
-        );
+      // If using composite identifier, validate all columns exist
+      if (rowIdentifier.compositeIdentifier) {
+        for (const identifier of rowIdentifier.compositeIdentifier as IdentifierColumn[]) {
+          const identifierColumnExists = columnInfo.some(col => col.name === identifier.column);
+          
+          if (!identifierColumnExists) {
+            db.close();
+            return NextResponse.json(
+              { error: `Identifier column '${identifier.column}' not found` },
+              { status: 404 }
+            );
+          }
+        }
       }
 
       // Begin a transaction
       db.prepare('BEGIN TRANSACTION').run();
 
       try {
-        // Verify that the row exists
-        const rowQuery = `SELECT COUNT(*) as count FROM "${tableName}" WHERE "${rowIdentifier.column}" = ?`;
-        const { count } = db.prepare(rowQuery).get(rowIdentifier.value) as { count: number };
+        // Verify that the row exists and prepare WHERE clause
+        let whereClause: string;
+        let whereParams: any[];
+        
+        if (rowIdentifier.compositeIdentifier) {
+          // Composite identifier - build a WHERE clause with AND conditions
+          const identifiers = rowIdentifier.compositeIdentifier as IdentifierColumn[];
+          whereClause = identifiers.map(id => `"${id.column}" = ?`).join(' AND ');
+          whereParams = identifiers.map(id => id.value);
+        } else {
+          // Single column identifier
+          whereClause = `"${rowIdentifier.column}" = ?`;
+          whereParams = [rowIdentifier.value];
+        }
+        
+        // Check if the row exists
+        const rowQuery = `SELECT COUNT(*) as count FROM "${tableName}" WHERE ${whereClause}`;
+        const { count } = db.prepare(rowQuery).get(...whereParams) as { count: number };
         
         if (count === 0) {
-          throw new Error(`Row with ${rowIdentifier.column} = ${rowIdentifier.value} not found`);
+          throw new Error(`Row not found with the specified identifiers`);
         }
 
         // Construct and execute the UPDATE statement
         // Using parameterized query to prevent SQL injection
-        const updateQuery = `UPDATE "${tableName}" SET "${columnName}" = ? WHERE "${rowIdentifier.column}" = ?`;
+        const updateQuery = `UPDATE "${tableName}" SET "${columnName}" = ? WHERE ${whereClause}`;
         const updateStmt = db.prepare(updateQuery);
         
         // Handle null values
         const valueToUse = newValue === null ? null : newValue;
         
-        const result = updateStmt.run(valueToUse, rowIdentifier.value);
+        // Execute update with all parameters
+        const result = updateStmt.run(valueToUse, ...whereParams);
         
         // Commit the transaction
         db.prepare('COMMIT').run();
