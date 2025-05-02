@@ -90,7 +90,7 @@ export default function Home() {
       <header className="border-b bg-gradient-to-r from-background to-muted p-4 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <Database className="h-5 w-5 text-primary" />
-          <h1 className="font-bold text-xl">SQLite Editor WebApp</h1>
+          <h1 className="font-bold text-xl">SqlEditor</h1>
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -179,7 +179,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t py-2 px-4 text-center text-xs text-muted-foreground bg-muted/30">
-        <p>SQLite Editor WebApp - MVP Version</p>
+        <p>SqlEditor - Version 0.0.1</p>
       </footer>
     </main>
   );

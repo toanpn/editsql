@@ -415,7 +415,7 @@ export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
               <Button 
                 onClick={handleExecuteQuery} 
                 disabled={isLoading || !sqlQuery.trim()}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
               >
                 {isLoading ? (
                   <>

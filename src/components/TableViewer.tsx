@@ -727,7 +727,11 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                 </button>
               )}
             </div>
-            <Button onClick={handleSearch} size="sm">
+            <Button 
+              onClick={handleSearch} 
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+            >
               Search
             </Button>
           </div>
@@ -740,7 +744,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                 <Button 
                   size="sm" 
                   onClick={() => setIsAddRowDialogOpen(true)} 
-                  className="ml-auto"
+                  className="ml-auto bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800"
                 >
                   <PlusCircle className="h-4 w-4 mr-2" />
                   Add Row
