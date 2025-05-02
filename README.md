@@ -11,6 +11,7 @@ A web application to upload, view, edit, query, and export SQLite database files
 - Filter data by column and value
 - Export modified database (`_edited` suffix)
 - Files auto-deleted when page is closed
+- File size limit: 10MB (for MVP)
 
 ## 🧩 Technology Stack
 
@@ -43,3 +44,44 @@ sqlite-editor-webapp/
 ├── tsconfig.json
 ├── next.config.js
 ├── package.json
+
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd sqlite-editor-webapp
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## 💡 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

@@ -2,14 +2,14 @@
 
 **Phase 1: Project Setup & Basic Layout**
 
-- [ ] 1.  **Initialize Next.js Project:**
+- [x] 1.  **Initialize Next.js Project:**
     *   Use `create-next-app`.
     *   Configure TypeScript, Tailwind CSS during setup.
-- [ ] 2.  **Install Dependencies:**
+- [x] 2.  **Install Dependencies:**
     *   `shadcn/ui`: Initialize and add necessary components (e.g., `button`, `input`, `table`, `resizable`, `textarea`).
     *   A server-side SQLite library (e.g., `better-sqlite3`).
     *   Libraries for file handling if needed (though Next.js API routes might suffice initially).
-- [ ] 3.  **Basic UI Layout:**
+- [x] 3.  **Basic UI Layout:**
     *   Create the main app layout using `Resizable` components from `shadcn/ui` for a two-panel view (left sidebar for tables, right main area for data/CLI).
     *   Set up basic placeholders for the file upload area, table list, data display, and SQL CLI.
 
