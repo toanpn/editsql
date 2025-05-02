@@ -27,17 +27,37 @@ export default function Home() {
     setUploadedFile(file);
     
     try {
-      // In Phase 5, we'll implement the actual API call to upload the file and get tables
-      // For now, just simulate a successful upload after a delay
-      setTimeout(() => {
-        // In Phase 5, we'll get the actual tables from the API response
-        setIsFileUploaded(true);
-        setIsLoading(false);
-      }, 1500);
+      // Create a FormData object and append the file
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Send the file to our API route
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to upload file');
+      }
+      
+      // Store the session ID in localStorage for future use
+      if (data.sessionId) {
+        localStorage.setItem('sessionId', data.sessionId);
+      }
+      
+      // Set file as uploaded
+      setIsFileUploaded(true);
+      
+      // In the next phase, we'll fetch the tables list here
+      
     } catch (error) {
       console.error("Error uploading file:", error);
+      // TODO: Display error message to the user
+    } finally {
       setIsLoading(false);
-      // In a real implementation, display an error message to the user
     }
   };
 

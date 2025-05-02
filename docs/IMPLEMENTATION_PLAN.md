@@ -19,7 +19,7 @@
     *   Implement a drag-and-drop area and a file input button.
     *   Use React state to manage the uploaded file object.
     *   Basic validation for file type (`.sqlite`, `.db`) and size (10MB limit) on the client-side.
-- [ ] 5.  **File Upload API Route (Backend - Next.js API Route):**
+- [x] 5.  **File Upload API Route (Backend - Next.js API Route):**
     *   Create an API route (`/api/upload`) to receive the uploaded file (using `multipart/form-data`).
     *   Implement server-side validation (type, size).
     *   Temporarily store the uploaded file on the server (e.g., in a temporary directory or in memory if small enough, keeping file lifecycle in mind - session-based storage). Associate the stored file with the user's session.

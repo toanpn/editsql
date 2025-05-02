@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 // Maximum file size: 10MB (in bytes)
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -46,15 +46,19 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
   };
 
   // Handle file selection
-  const handleFileSelection = (file: File) => {
+  const handleFileSelection = async (file: File) => {
     if (validateFile(file)) {
       setSelectedFile(file);
       
       // Only call the onFileUpload callback if validation passes
       if (onFileUpload) {
         setIsUploading(true);
-        // In a real implementation, you might want to add error handling here
-        onFileUpload(file);
+        try {
+          await onFileUpload(file);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Failed to upload file');
+          setIsUploading(false);
+        }
       }
     }
   };
@@ -142,7 +146,14 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
           onClick={() => document.getElementById("file-upload")?.click()}
           disabled={isUploading}
         >
-          {selectedFile ? "Choose Different File" : "Select File"}
+          {isUploading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Uploading...
+            </>
+          ) : (
+            selectedFile ? "Choose Different File" : "Select File"
+          )}
         </Button>
       </div>
     </div>

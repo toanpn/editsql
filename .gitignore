@@ -58,3 +58,8 @@ next-env.d.ts
 
 # Local development
 .localdev/
+
+# Ignore temporary uploads directory
+/tmp
+*.db
+*.sqlite
