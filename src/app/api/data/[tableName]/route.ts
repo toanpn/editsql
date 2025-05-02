@@ -12,10 +12,10 @@ const DEFAULT_PAGE = 1;
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { tableName: string } }
+  context: { params: { tableName: string } }
 ) {
   try {
-    const { tableName } = params;
+    const { tableName } = context.params;
     
     // Get pagination parameters
     const searchParams = req.nextUrl.searchParams;
