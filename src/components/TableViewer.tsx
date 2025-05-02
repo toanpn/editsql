@@ -21,7 +21,8 @@ import {
   Check, 
   AlertCircle,
   Info,
-  Edit2
+  Edit2,
+  PlusCircle
 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -30,6 +31,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 // Define types for the API response
 interface ColumnInfo {
@@ -102,6 +113,12 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
   
   // Track cells that were successfully edited
   const [recentlyEditedCells, setRecentlyEditedCells] = useState<Set<string>>(new Set());
+
+  // New state for add row dialog
+  const [isAddRowDialogOpen, setIsAddRowDialogOpen] = useState(false);
+  const [newRowData, setNewRowData] = useState<Record<string, any>>({});
+  const [isAddingRow, setIsAddingRow] = useState(false);
+  const [addRowErrors, setAddRowErrors] = useState<Record<string, string>>({});
 
   // Fetch table data when a table is selected or pagination changes
   useEffect(() => {
@@ -401,6 +418,162 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
     setIsSearching(false);
   };
 
+  // Reset new row form when dialog opens or table changes
+  useEffect(() => {
+    if (isAddRowDialogOpen && tableData) {
+      // Initialize with empty values
+      const initialData: Record<string, any> = {};
+      tableData.columns.forEach(column => {
+        // Skip likely auto-increment primary keys (INTEGER PRIMARY KEY)
+        if (!(column.pk === 1 && column.type.toUpperCase().includes('INTEGER'))) {
+          initialData[column.name] = null;
+        }
+      });
+      setNewRowData(initialData);
+      setAddRowErrors({});
+    }
+  }, [isAddRowDialogOpen, tableData?.tableName]);
+
+  // Handle adding a new row
+  const handleAddRow = async () => {
+    if (!tableData) return;
+    
+    // Validate all fields
+    const errors: Record<string, string> = {};
+    let hasErrors = false;
+
+    tableData.columns.forEach(column => {
+      // Skip likely auto-increment primary keys
+      if (column.pk === 1 && column.type.toUpperCase().includes('INTEGER')) {
+        return;
+      }
+
+      // Required fields (NOT NULL without default)
+      if (column.notnull === 1 && column.dflt_value === null && newRowData[column.name] === null) {
+        errors[column.name] = "This field is required";
+        hasErrors = true;
+        return;
+      }
+
+      // Type validation for non-null values
+      if (newRowData[column.name] !== null) {
+        const validation = validateValue(String(newRowData[column.name]), column);
+        if (!validation.isValid) {
+          errors[column.name] = validation.error || "Invalid value";
+          hasErrors = true;
+          return;
+        }
+
+        // Update with formatted value
+        newRowData[column.name] = validation.formattedValue;
+      }
+    });
+
+    if (hasErrors) {
+      setAddRowErrors(errors);
+      return;
+    }
+
+    setIsAddingRow(true);
+    setAddRowErrors({});
+
+    try {
+      // Get session ID
+      const sessionId = localStorage.getItem('sessionId');
+      if (!sessionId) {
+        throw new Error('No session ID found');
+      }
+
+      // Call the insert API
+      const response = await fetch(`/api/insert?sessionId=${sessionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tableName: tableData.tableName,
+          rowData: newRowData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to insert row');
+      }
+
+      const result = await response.json();
+
+      // Add the new row to the table data
+      if (result.newRow) {
+        // If we're on the last page or there's only one page, add to current page
+        const isLastPage = currentPage === tableData.pagination.totalPages;
+        if (isLastPage) {
+          const newData = [...tableData.data, result.newRow];
+          setTableData({
+            ...tableData,
+            data: newData,
+            pagination: {
+              ...tableData.pagination,
+              totalRows: tableData.pagination.totalRows + 1,
+              totalPages: Math.ceil((tableData.pagination.totalRows + 1) / tableData.pagination.limit)
+            }
+          });
+        } else {
+          // If not on the last page, just update the pagination counts
+          setTableData({
+            ...tableData,
+            pagination: {
+              ...tableData.pagination,
+              totalRows: tableData.pagination.totalRows + 1,
+              totalPages: Math.ceil((tableData.pagination.totalRows + 1) / tableData.pagination.limit)
+            }
+          });
+        }
+      }
+
+      // Close the dialog and show success message
+      setIsAddRowDialogOpen(false);
+      toast({
+        title: "Success",
+        description: "New row added successfully",
+      });
+    } catch (error) {
+      console.error("Error adding row:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to add row',
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingRow(false);
+    }
+  };
+
+  // Handle input change for new row form
+  const handleNewRowInputChange = (columnName: string, value: string) => {
+    setNewRowData(prev => ({
+      ...prev,
+      [columnName]: value === "" ? null : value
+    }));
+
+    // Clear error for this field if exists
+    if (addRowErrors[columnName]) {
+      setAddRowErrors(prev => {
+        const updated = { ...prev };
+        delete updated[columnName];
+        return updated;
+      });
+    }
+  };
+
+  // Helper function to check if a column is likely an auto-increment primary key
+  const isAutoIncrementColumn = (columnName: string): boolean => {
+    // This is a simplified check - in a real app you'd query the database
+    // For SQLite, INTEGER PRIMARY KEY columns are typically auto-increment
+    const column = tableData?.columns.find(col => col.name === columnName);
+    return column?.pk === 1 && (column?.type.toUpperCase().includes('INTEGER'));
+  };
+
   // If no table is selected, show a message
   if (!selectedTable) {
     return (
@@ -438,7 +611,17 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
       <TooltipProvider>
         <div className="h-full flex flex-col">
           <div className="py-2 px-4 border-b">
-            <h2 className="font-semibold">Table: {tableData.tableName}</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="font-semibold">Table: {tableData.tableName}</h2>
+              <Button 
+                size="sm" 
+                onClick={() => setIsAddRowDialogOpen(true)} 
+                className="ml-auto"
+              >
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Add Row
+              </Button>
+            </div>
             <div className="flex justify-between items-center">
               <p className="text-xs text-muted-foreground">
                 {tableData.pagination.totalRows} rows in total
@@ -680,6 +863,80 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
               </div>
             )}
           </div>
+
+          {/* Add Row Dialog */}
+          <Dialog open={isAddRowDialogOpen} onOpenChange={setIsAddRowDialogOpen}>
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Add New Row to {tableData.tableName}</DialogTitle>
+                <DialogDescription>
+                  Fill in the values for the new row. Fields marked with * are required.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                {tableData.columns.map((column) => {
+                  // Skip auto-increment primary keys in the form
+                  if (column.pk === 1 && column.type.toUpperCase().includes('INTEGER')) {
+                    return (
+                      <div key={column.name} className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor={column.name} className="text-right">
+                          {column.name}
+                          <span className="ml-1 text-xs bg-primary/10 text-primary px-1 rounded">PK (auto)</span>
+                        </Label>
+                        <div className="col-span-3 text-sm text-muted-foreground">
+                          Will be automatically generated
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div key={column.name} className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor={column.name} className="text-right">
+                        {column.name}
+                        {column.pk === 1 && (
+                          <span className="ml-1 text-xs bg-primary/10 text-primary px-1 rounded">PK</span>
+                        )}
+                        {column.notnull === 1 && column.dflt_value === null && (
+                          <span className="ml-1 text-xs text-red-500">*</span>
+                        )}
+                      </Label>
+                      <div className="col-span-3">
+                        <div className="text-xs text-muted-foreground mb-1">
+                          {column.type} {column.dflt_value ? `(Default: ${column.dflt_value})` : ''}
+                        </div>
+                        <Input
+                          id={column.name}
+                          value={newRowData[column.name] === null ? '' : newRowData[column.name]}
+                          onChange={(e) => handleNewRowInputChange(column.name, e.target.value)}
+                          placeholder={column.notnull === 0 ? "NULL if empty" : ""}
+                          className={addRowErrors[column.name] ? "border-red-500" : ""}
+                        />
+                        {addRowErrors[column.name] && (
+                          <p className="text-xs text-red-500 mt-1">{addRowErrors[column.name]}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddRowDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddRow} disabled={isAddingRow}>
+                  {isAddingRow ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    "Add Row"
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </TooltipProvider>
     );

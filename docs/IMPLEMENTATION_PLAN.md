@@ -54,7 +54,7 @@
     *   On blur (losing focus) of the input, call the `/api/edit` endpoint with the changes.
     *   Update the local state to reflect the change immediately (optimistic update) or refetch the data.
 
-- [ ] 12. **Add New Row API Route (Backend):**
+- [x] 12. **Add New Row API Route (Backend):**
     *   Create an API route (`/api/insert`) that accepts table name and an object containing column names and values for the new row.
     *   Analyze the table schema to handle special cases:
         *   Primary key constraints: Allow SQLite to auto-generate values for `INTEGER PRIMARY KEY AUTOINCREMENT` columns.
@@ -64,7 +64,7 @@
     *   Return success status with the newly created row data (including any auto-generated values).
     *   Handle and return appropriate error messages for constraint violations (unique constraints, foreign keys).
 
-- [ ] 13. **Add New Row UI (Frontend):**
+- [x] 13. **Add New Row UI (Frontend):**
     *   Add an "Add Row" button above the data table.
     *   On click, show a form or modal with input fields for each column.
     *   Provide appropriate input types based on column data types.
