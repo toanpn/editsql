@@ -15,7 +15,7 @@
 
 **Phase 2: File Handling & Core Backend**
 
-- [ ] 4.  **File Upload Component (Frontend):**
+- [x] 4.  **File Upload Component (Frontend):**
     *   Implement a drag-and-drop area and a file input button.
     *   Use React state to manage the uploaded file object.
     *   Basic validation for file type (`.sqlite`, `.db`) and size (10MB limit) on the client-side.

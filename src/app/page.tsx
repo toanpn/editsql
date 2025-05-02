@@ -13,9 +13,39 @@ import SQLCli from "@/components/SQLCli";
 import ExportButton from "@/components/ExportButton";
 
 export default function Home() {
-  // This is a placeholder. Real implementation will be added in later phases
+  // State for the uploaded file and tables
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [activeView, setActiveView] = useState<"table" | "sql">("table");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [tables, setTables] = useState<{ name: string }[]>([]);
+  const [selectedTable, setSelectedTable] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Handle file upload
+  const handleFileUpload = async (file: File) => {
+    setIsLoading(true);
+    setUploadedFile(file);
+    
+    try {
+      // In Phase 5, we'll implement the actual API call to upload the file and get tables
+      // For now, just simulate a successful upload after a delay
+      setTimeout(() => {
+        // In Phase 5, we'll get the actual tables from the API response
+        setIsFileUploaded(true);
+        setIsLoading(false);
+      }, 1500);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setIsLoading(false);
+      // In a real implementation, display an error message to the user
+    }
+  };
+
+  // Handle table selection
+  const handleTableSelect = (tableName: string) => {
+    setSelectedTable(tableName);
+    // In Phase 3, we'll implement the actual table data fetching
+  };
 
   return (
     <main className="h-screen flex flex-col overflow-hidden">
@@ -29,7 +59,7 @@ export default function Home() {
       <div className="flex-1 overflow-hidden">
         {!isFileUploaded ? (
           <div className="h-full flex items-center justify-center p-8">
-            <FileUploader />
+            <FileUploader onFileUpload={handleFileUpload} />
           </div>
         ) : (
           <ResizablePanelGroup
@@ -38,7 +68,10 @@ export default function Home() {
           >
             {/* Sidebar */}
             <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
-              <SidebarTables />
+              <SidebarTables 
+                tables={tables} 
+                onSelectTable={handleTableSelect} 
+              />
             </ResizablePanel>
 
             <ResizableHandle withHandle />
