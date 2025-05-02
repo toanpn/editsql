@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main    # Deploy khi push vào main
+      - main
 
 jobs:
   deploy:
@@ -34,7 +34,7 @@ jobs:
             sudo usermod -a -G docker ec2-user
           fi
 
-          # Thêm github.com vào known_hosts nếu cần
+          # Trust github.com
           ssh-keyscan github.com >> ~/.ssh/known_hosts || true
 
           # Pull hoặc clone code
@@ -51,12 +51,12 @@ jobs:
           docker build -t editsql:latest .
 
           # Nếu container đang chạy thì stop và remove
-          if docker ps -q -f name=editsql-container; then
+          if [ $(docker ps -a -q -f name=editsql-container) ]; then
             docker stop editsql-container
             docker rm editsql-container
           fi
 
-          # Chạy lại container
+          # Run container mới
           docker run -d --name editsql-container --restart always -p 3000:3000 editsql:latest
 
         EOF
