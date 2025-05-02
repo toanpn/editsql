@@ -22,7 +22,9 @@ import {
   AlertCircle,
   Info,
   Edit2,
-  PlusCircle
+  PlusCircle,
+  CheckCircle2,
+  XCircle
 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -357,6 +359,9 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
         title: "Value updated",
         description: `Successfully updated ${editingCell.columnName}`,
         duration: 3000,
+        variant: "default",
+        className: "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800",
+        action: <CheckCircle2 className="h-5 w-5 text-green-500" />
       });
 
       // Clear editing state
@@ -393,12 +398,25 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
   // Format cell display value based on its type
   const formatCellValue = (value: any, column: ColumnInfo) => {
     if (value === null) {
-      return <span className="text-muted-foreground">NULL</span>;
+      return <span className="text-muted-foreground text-xs italic">NULL</span>;
     }
     
     // Format based on column type
     if (column.type.includes("INT") || column.type.includes("FLOAT") || column.type.includes("REAL")) {
-      return <span className="font-mono">{value}</span>;
+      return <span className="font-mono text-blue-600 dark:text-blue-400">{value}</span>;
+    }
+
+    if (typeof value === 'string' && value.length > 100) {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-help">{value.substring(0, 100)}...</span>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-md">
+            <p className="text-xs whitespace-pre-wrap break-words">{value}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
     }
     
     // Default formatting
@@ -534,8 +552,11 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
       // Close the dialog and show success message
       setIsAddRowDialogOpen(false);
       toast({
-        title: "Success",
+        title: "Row added",
         description: "New row added successfully",
+        variant: "default",
+        className: "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800",
+        action: <CheckCircle2 className="h-5 w-5 text-green-500" />
       });
     } catch (error) {
       console.error("Error adding row:", error);
@@ -543,6 +564,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
         title: "Error",
         description: error instanceof Error ? error.message : 'Failed to add row',
         variant: "destructive",
+        action: <XCircle className="h-5 w-5" />
       });
     } finally {
       setIsAddingRow(false);
@@ -613,14 +635,6 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
           <div className="py-2 px-4 border-b">
             <div className="flex justify-between items-center">
               <h2 className="font-semibold">Table: {tableData.tableName}</h2>
-              <Button 
-                size="sm" 
-                onClick={() => setIsAddRowDialogOpen(true)} 
-                className="ml-auto"
-              >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Add Row
-              </Button>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-xs text-muted-foreground">
@@ -692,17 +706,28 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
           {/* Table content */}
           <div className="flex-1 overflow-auto p-4">
             <div className="border rounded-md">
+              <div className="flex items-center justify-between p-2 border-b bg-muted/30">
+                <h3 className="text-sm font-medium">Table Data</h3>
+                <Button 
+                  size="sm" 
+                  onClick={() => setIsAddRowDialogOpen(true)} 
+                  className="ml-auto"
+                >
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Add Row
+                </Button>
+              </div>
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-muted/50">
                   <TableRow>
                     {tableData.columns.map((column) => (
-                      <TableHead key={column.name}>
+                      <TableHead key={column.name} className="font-medium">
                         <div className="flex items-center">
-                          <span>{column.name}</span>
+                          <span className="text-primary">{column.name}</span>
                           {column.pk === 1 && (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="ml-1 text-xs bg-primary/10 text-primary px-1 rounded">PK</span>
+                                <span className="ml-1 text-xs bg-primary/20 text-primary px-1 rounded-full border border-primary/20">PK</span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p className="text-xs">Primary Key (cannot be edited)</p>
@@ -712,7 +737,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                           {column.notnull === 1 && !column.pk && (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="ml-1 text-xs bg-amber-500/10 text-amber-500 px-1 rounded">!</span>
+                                <span className="ml-1 text-xs bg-amber-500/20 text-amber-500 px-1 rounded-full border border-amber-500/20">!</span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p className="text-xs">NOT NULL constraint</p>
@@ -720,8 +745,10 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                             </Tooltip>
                           )}
                         </div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {column.type}
+                        <div className="text-xs mt-1">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+                            {column.type}
+                          </span>
                         </div>
                       </TableHead>
                     ))}
@@ -739,7 +766,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                     </TableRow>
                   ) : (
                     tableData.data.map((row, rowIndex) => (
-                      <TableRow key={rowIndex}>
+                      <TableRow key={rowIndex} className="group">
                         {tableData.columns.map((column) => {
                           const cellKey = `${rowIndex}-${column.name}`;
                           const isEditable = column.pk !== 1;
@@ -748,9 +775,9 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                           return (
                             <TableCell 
                               key={cellKey}
-                              className={`relative ${isEditable ? "cursor-pointer hover:bg-muted/50" : ""} ${
-                                isRecentlyEdited ? "bg-green-100 dark:bg-green-900/20" : ""
-                              }`}
+                              className={`relative ${isEditable ? "cursor-pointer group-hover:bg-muted/30" : ""} ${
+                                isRecentlyEdited ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800" : ""
+                              } transition-all duration-200 ease-in-out`}
                               onClick={() => isEditable && handleCellClick(rowIndex, column.name, row[column.name])}
                             >
                               {editingCell?.rowIndex === rowIndex && editingCell?.columnName === column.name ? (
@@ -764,7 +791,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                                       className={`h-7 py-1 ${
                                         validationResult && !validationResult.isValid 
                                           ? "border-red-500 focus-visible:ring-red-500" 
-                                          : ""
+                                          : "focus-visible:ring-primary/40"
                                       }`}
                                       disabled={isEditing}
                                     />
@@ -783,7 +810,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                                     <Button 
                                       size="icon" 
                                       variant="ghost" 
-                                      className="h-6 w-6" 
+                                      className="h-6 w-6 text-green-600 hover:text-green-700 hover:bg-green-50" 
                                       onClick={handleSaveEdit}
                                       disabled={isEditing || (validationResult?.isValid === false)}
                                     >
@@ -792,7 +819,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                                     <Button 
                                       size="icon" 
                                       variant="ghost" 
-                                      className="h-6 w-6" 
+                                      className="h-6 w-6 text-red-600 hover:text-red-700 hover:bg-red-50" 
                                       onClick={handleCancelEdit}
                                       disabled={isEditing}
                                     >
@@ -804,7 +831,9 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                                 <>
                                   {formatCellValue(row[column.name], column)}
                                   {isEditable && (
-                                    <Edit2 className="h-3 w-3 text-muted-foreground/50 absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 rounded-full p-0.5">
+                                      <Edit2 className="h-3 w-3 text-primary/70" />
+                                    </div>
                                   )}
                                 </>
                               )}
@@ -868,9 +897,12 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
           <Dialog open={isAddRowDialogOpen} onOpenChange={setIsAddRowDialogOpen}>
             <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add New Row to {tableData.tableName}</DialogTitle>
+                <DialogTitle className="flex items-center space-x-2">
+                  <PlusCircle className="h-5 w-5 text-primary" />
+                  <span>Add New Row to {tableData.tableName}</span>
+                </DialogTitle>
                 <DialogDescription>
-                  Fill in the values for the new row. Fields marked with * are required.
+                  Fill in the values for the new row. Fields marked with <span className="text-red-500">*</span> are required.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -924,14 +956,21 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                 <Button variant="outline" onClick={() => setIsAddRowDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleAddRow} disabled={isAddingRow}>
+                <Button 
+                  onClick={handleAddRow} 
+                  disabled={isAddingRow}
+                  className="bg-primary hover:bg-primary/90"
+                >
                   {isAddingRow ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Adding...
                     </>
                   ) : (
-                    "Add Row"
+                    <>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Add Row
+                    </>
                   )}
                 </Button>
               </DialogFooter>
