@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { 
   Table, 
   TableBody, 
@@ -97,6 +97,9 @@ export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
   const [editorFocused, setEditorFocused] = useState(false);
   const [queryStartTime, setQueryStartTime] = useState<number | null>(null);
   const [queryEndTime, setQueryEndTime] = useState<number | null>(null);
+  const [caretPosition, setCaretPosition] = useState<number | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   // Execute the SQL query
   const handleExecuteQuery = async () => {
@@ -179,24 +182,143 @@ export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
       e.preventDefault();
       handleExecuteQuery();
     }
+    
+    // Update caret position after keydown
+    setTimeout(() => {
+      if (textareaRef.current) {
+        setCaretPosition(textareaRef.current.selectionStart);
+      }
+    }, 0);
   };
 
   // Handle focus on textarea
   const handleFocus = () => {
-    setShowHighlighter(false);
     setEditorFocused(true);
+    if (textareaRef.current) {
+      setCaretPosition(textareaRef.current.selectionStart);
+    }
   };
 
   // Handle blur on textarea
   const handleBlur = () => {
-    setShowHighlighter(true);
     setEditorFocused(false);
+    setCaretPosition(null);
+  };
+
+  // Handle click in the editor area to focus the textarea
+  const handleEditorClick = (e: React.MouseEvent) => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+      
+      // Try to position caret based on click position (approximation)
+      // This is not perfectly accurate but provides a better UX
+      const rect = editorRef.current?.getBoundingClientRect();
+      if (rect) {
+        // Get coordinates relative to the editor
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Approximate character width and line height
+        const charWidth = 8.4; // Average character width in pixels for monospace font
+        const lineHeight = 20; // Approximate line height in pixels
+        
+        // Calculate approximate position
+        const lines = sqlQuery.split('\n');
+        const lineIndex = Math.min(Math.floor(y / lineHeight), lines.length - 1);
+        
+        let position = 0;
+        // Add length of all previous lines plus newline characters
+        for (let i = 0; i < lineIndex; i++) {
+          position += lines[i].length + 1; // +1 for newline
+        }
+        
+        // Add approximate character position in current line
+        const charIndex = Math.min(Math.floor(x / charWidth), lines[lineIndex]?.length || 0);
+        position += charIndex;
+        
+        // Set selection range to place caret
+        if (textareaRef.current) {
+          textareaRef.current.setSelectionRange(position, position);
+          setCaretPosition(position);
+        }
+      }
+    }
   };
 
   // Update SQL query with enhanced syntax
   const handleSqlChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSqlQuery(e.target.value);
+    setCaretPosition(e.target.selectionStart);
   };
+
+  // Update caret position when selection changes
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      if (textareaRef.current && document.activeElement === textareaRef.current) {
+        setCaretPosition(textareaRef.current.selectionStart);
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
+
+  // Calculate the position of the caret for display
+  const getCaretCoordinates = () => {
+    if (caretPosition === null || !editorFocused || !sqlQuery) return null;
+    
+    const textBeforeCaret = sqlQuery.substring(0, caretPosition);
+    const lines = textBeforeCaret.split('\n');
+    const currentLineIndex = lines.length - 1;
+    const currentLineText = lines[currentLineIndex];
+    
+    // Calculate position
+    const charWidth = 8.2; // px, approximate for monospace font
+    const lineHeight = 20; // px, approximate
+    const paddingLeft = 8; // px, content padding
+    const paddingTop = 8; // px, content padding
+    
+    return {
+      top: (currentLineIndex * lineHeight) + paddingTop,
+      left: (currentLineText.length * charWidth) + paddingLeft
+    };
+  };
+
+  const caretCoordinates = getCaretCoordinates();
+
+  // Handle initial cursor position on empty query
+  useEffect(() => {
+    if (editorFocused && textareaRef.current && !sqlQuery) {
+      setCaretPosition(0);
+    }
+  }, [editorFocused, sqlQuery]);
+
+  // Ensure cursor is visible when typing
+  useEffect(() => {
+    if (editorFocused && caretCoordinates && editorRef.current) {
+      const scrollableContainer = editorRef.current.querySelector('div');
+      if (scrollableContainer) {
+        const { top, left } = caretCoordinates;
+        const containerHeight = scrollableContainer.clientHeight;
+        const containerWidth = scrollableContainer.clientWidth;
+        
+        // Check if caret is outside visible area
+        if (top < scrollableContainer.scrollTop) {
+          scrollableContainer.scrollTop = top;
+        } else if (top > scrollableContainer.scrollTop + containerHeight - 30) {
+          scrollableContainer.scrollTop = top - containerHeight + 30;
+        }
+
+        if (left < scrollableContainer.scrollLeft) {
+          scrollableContainer.scrollLeft = left;
+        } else if (left > scrollableContainer.scrollLeft + containerWidth - 10) {
+          scrollableContainer.scrollLeft = left - containerWidth + 10;
+        }
+      }
+    }
+  }, [caretCoordinates, editorFocused]);
 
   return (
     <div className="h-full flex flex-col">
@@ -223,41 +345,64 @@ export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
               </div>
             </div>
             
-            <div className="relative flex-1 min-h-[120px]">
-              {showHighlighter && sqlQuery && (
-                <div className={`absolute inset-0 font-mono p-2 border rounded-md ${editorFocused ? 'border-primary' : 'border-input'} bg-background z-0 overflow-auto`}>
-                  <SyntaxHighlighter 
-                    language="sql" 
-                    style={sqlSyntaxTheme}
-                    customStyle={{
-                      margin: 0,
-                      padding: 0,
-                      background: 'transparent',
-                      fontSize: '0.875rem',
-                      height: '100%',
+            <div className="relative flex-1 min-h-[120px]" onClick={handleEditorClick} ref={editorRef}>
+              {/* Always show the syntax highlighter */}
+              <div className={`absolute inset-0 font-mono p-2 border rounded-md ${editorFocused ? 'border-primary' : 'border-input'} bg-background z-0 overflow-auto`}>
+                <SyntaxHighlighter 
+                  language="sql" 
+                  style={sqlSyntaxTheme}
+                  customStyle={{
+                    margin: 0,
+                    padding: 0,
+                    background: 'transparent',
+                    fontSize: '0.875rem',
+                    height: '100%',
+                    whiteSpace: 'pre-wrap',
+                    position: 'relative',
+                  }}
+                  codeTagProps={{
+                    style: {
+                      display: 'block',
+                      fontFamily: 'monospace',
+                    }
+                  }}
+                >
+                  {sqlQuery ? enhanceSqlSyntax(sqlQuery) : " "} {/* Use space to ensure height is maintained when empty */}
+                </SyntaxHighlighter>
+                
+                {/* Custom caret indicator */}
+                {editorFocused && caretCoordinates && (
+                  <div 
+                    className="absolute w-[2px] h-[18px] bg-primary pointer-events-none animate-caret-blink" 
+                    style={{
+                      top: caretCoordinates.top,
+                      left: caretCoordinates.left,
+                      zIndex: 10,
                     }}
-                    codeTagProps={{
-                      style: {
-                        display: 'block',
-                        fontFamily: 'monospace',
-                      }
-                    }}
-                  >
-                    {enhanceSqlSyntax(sqlQuery)}
-                  </SyntaxHighlighter>
-                </div>
-              )}
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
               <Textarea
+                ref={textareaRef}
                 id="sql-query"
                 value={sqlQuery}
                 onChange={handleSqlChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
+                onMouseDown={(e) => {
+                  // Update caret position on mouse clicks
+                  setTimeout(() => {
+                    if (textareaRef.current) {
+                      setCaretPosition(textareaRef.current.selectionStart);
+                    }
+                  }, 0);
+                }}
                 placeholder="SELECT * FROM your_table WHERE condition;"
-                className={`font-mono absolute inset-0 resize-none h-full ${showHighlighter && sqlQuery ? 'opacity-0' : 'border-primary'}`}
+                className="font-mono absolute inset-0 resize-none h-full opacity-0"
                 style={{ 
-                  caretColor: showHighlighter && sqlQuery ? 'transparent' : 'auto'
+                  caretColor: 'transparent', // Hide the native caret
                 }}
               />
             </div>

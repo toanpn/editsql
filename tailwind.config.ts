@@ -60,6 +60,15 @@ const config = {
       fontFamily: {
         sans: ["var(--font-sans)"],
       },
+      keyframes: {
+        "caret-blink": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        }
+      },
+      animation: {
+        "caret-blink": "caret-blink 1s step-end infinite",
+      },
     },
   },
   plugins: [],
