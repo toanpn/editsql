@@ -1,13 +1,11 @@
 services:
-  sqlite-editor:
+  sqlite:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     restart: unless-stopped
-    volumes:
-      - sqlite-tmp:/app/tmp
     environment:
       - NODE_ENV=production
 

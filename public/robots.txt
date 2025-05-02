@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.sqleditor.online
+
+# Sitemaps
+Sitemap: https://www.sqleditor.online/sitemap.xml

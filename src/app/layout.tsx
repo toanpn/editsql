@@ -13,8 +13,31 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "SQLite Editor WebApp",
-  description: "A web-based SQLite database editor",
+  title: "SQLite Editor Online - Free Online SQLite Database Editor",
+  description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. No installation required.",
+  keywords: "sqlite editor, online sqlite editor, sqlite database editor, edit sqlite online, sqlite web editor, sqlite online database editor",
+  openGraph: {
+    title: "SQLite Editor Online - Free Online SQLite Database Editor",
+    description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export.",
+    url: "https://www.sqleditor.online",
+    siteName: "SQLite Editor Online",
+    images: [
+      {
+        url: "https://www.sqleditor.online/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "SQLite Editor Online",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SQLite Editor Online - Free Online SQLite Database Editor",
+    description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export.",
+    images: ["https://www.sqleditor.online/og-image.png"],
+  },
 };
 
 export default function RootLayout({
