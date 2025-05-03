@@ -16,6 +16,18 @@ export const metadata: Metadata = {
   title: "SQLite Editor Online - Free Online SQLite Database Editor",
   description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. No installation required.",
   keywords: "sqlite editor, online sqlite editor, sqlite database editor, edit sqlite online, sqlite web editor, sqlite online database editor",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   openGraph: {
     title: "SQLite Editor Online - Free Online SQLite Database Editor",
     description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export.",

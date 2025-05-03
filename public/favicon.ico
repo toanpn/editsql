@@ -1,0 +1,7 @@
+This file should be replaced with a real .ico file generated from the icon.svg file. Since ICO is a binary format, please convert the SVG to ICO using a tool like:
+
+1. ImageMagick
+2. Online favicon generators
+3. Graphics software that supports ICO output
+
+The ICO file should contain multiple resolutions (16x16, 32x32, 48x48) for best compatibility. 
