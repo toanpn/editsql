@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -106,7 +106,26 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
   // State for search/filter
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-
+  
+  // Filtered data based on search term
+  const filteredData = useMemo(() => {
+    if (!tableData || !searchTerm.trim()) {
+      return tableData?.data || [];
+    }
+    
+    // Filter data based on search term (case-insensitive)
+    const searchLower = searchTerm.toLowerCase();
+    return tableData.data.filter(row => {
+      // Check if any column value includes the search term
+      return Object.entries(row).some(([, value]) => {
+        // Skip null values
+        if (value === null) return false;
+        // Convert value to string and check if it includes the search term
+        return String(value).toLowerCase().includes(searchLower);
+      });
+    });
+  }, [tableData, searchTerm]);
+  
   // New state for validation feedback
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   
@@ -450,9 +469,13 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
 
   // Handle search
   const handleSearch = () => {
-    // In a future implementation, we could pass the search term to the API
-    // For now, we'll set a flag to indicate searching is happening
-    setIsSearching(true);
+    if (searchTerm.trim()) {
+      setIsSearching(true);
+      // Reset to first page when searching
+      setCurrentPage(1);
+    }
+    // Set isSearching to false after a brief delay (to show the search animation)
+    setTimeout(() => setIsSearching(false), 300);
   };
 
   // Clear search
@@ -731,10 +754,39 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
               onClick={handleSearch} 
               size="sm"
               className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+              disabled={isSearching || !searchTerm.trim()}
             >
-              Search
+              {isSearching ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                  Searching...
+                </>
+              ) : (
+                "Search"
+              )}
             </Button>
           </div>
+
+          {/* Search status indicator */}
+          {searchTerm.trim() && (
+            <div className="py-2 px-4 border-b bg-blue-50 dark:bg-blue-900/20 text-sm flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              <span>
+                {filteredData.length === 0 
+                  ? "No results found for: " 
+                  : `Found ${filteredData.length} results for: `}
+                <span className="font-medium">&quot;{searchTerm}&quot;</span>
+              </span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="ml-auto text-blue-500 hover:text-blue-700" 
+                onClick={clearSearch}
+              >
+                Clear search
+              </Button>
+            </div>
+          )}
 
           {/* Table content */}
           <div className="flex-1 overflow-auto p-4">
@@ -798,83 +850,94 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                       </TableCell>
                     </TableRow>
                   ) : (
-                    tableData.data.map((row, rowIndex) => (
-                      <TableRow key={rowIndex} className="group">
-                        {tableData.columns.map((column) => {
-                          const cellKey = `${rowIndex}-${column.name}`;
-                          const isEditable = column.pk !== 1;
-                          const isRecentlyEdited = recentlyEditedCells.has(cellKey);
-                          
-                          return (
-                            <TableCell 
-                              key={cellKey}
-                              className={`relative ${isEditable ? "cursor-pointer group-hover:bg-muted/30" : ""} ${
-                                isRecentlyEdited ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800" : ""
-                              } transition-all duration-200 ease-in-out`}
-                              onClick={() => isEditable && handleCellClick(rowIndex, column.name, row[column.name])}
-                            >
-                              {editingCell?.rowIndex === rowIndex && editingCell?.columnName === column.name ? (
-                                <div className="flex items-center gap-1">
-                                  <div className="relative flex-1">
-                                    <Input
-                                      ref={inputRef}
-                                      value={editValue}
-                                      onChange={handleEditChange}
-                                      onKeyDown={handleEditKeyDown}
-                                      className={`h-7 py-1 ${
-                                        validationResult && !validationResult.isValid 
-                                          ? "border-red-500 focus-visible:ring-red-500" 
-                                          : "focus-visible:ring-primary/40"
-                                      }`}
-                                      disabled={isEditing}
-                                    />
-                                    {validationResult && !validationResult.isValid && (
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <AlertCircle className="absolute right-2 top-1.5 h-4 w-4 text-red-500" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p className="text-xs">{validationResult.error}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    )}
-                                  </div>
-                                  <div className="flex gap-1">
-                                    <Button 
-                                      size="icon" 
-                                      variant="ghost" 
-                                      className="h-6 w-6 text-green-600 hover:text-green-700 hover:bg-green-50" 
-                                      onClick={handleSaveEdit}
-                                      disabled={isEditing || (validationResult?.isValid === false)}
-                                    >
-                                      {isEditing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
-                                    </Button>
-                                    <Button 
-                                      size="icon" 
-                                      variant="ghost" 
-                                      className="h-6 w-6 text-red-600 hover:text-red-700 hover:bg-red-50" 
-                                      onClick={handleCancelEdit}
-                                      disabled={isEditing}
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <>
-                                  {formatCellValue(row[column.name], column)}
-                                  {isEditable && (
-                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 rounded-full p-0.5">
-                                      <Edit2 className="h-3 w-3 text-primary/70" />
-                                    </div>
-                                  )}
-                                </>
-                              )}
-                            </TableCell>
-                          );
-                        })}
+                    filteredData.length === 0 ? (
+                      <TableRow>
+                        <TableCell 
+                          colSpan={tableData.columns.length}
+                          className="h-24 text-center"
+                        >
+                          No matching results found.
+                        </TableCell>
                       </TableRow>
-                    ))
+                    ) : (
+                      filteredData.map((row, rowIndex) => (
+                        <TableRow key={rowIndex} className="group">
+                          {tableData.columns.map((column) => {
+                            const cellKey = `${rowIndex}-${column.name}`;
+                            const isEditable = column.pk !== 1;
+                            const isRecentlyEdited = recentlyEditedCells.has(cellKey);
+                            
+                            return (
+                              <TableCell 
+                                key={cellKey}
+                                className={`relative ${isEditable ? "cursor-pointer group-hover:bg-muted/30" : ""} ${
+                                  isRecentlyEdited ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800" : ""
+                                } transition-all duration-200 ease-in-out`}
+                                onClick={() => isEditable && handleCellClick(rowIndex, column.name, row[column.name])}
+                              >
+                                {editingCell?.rowIndex === rowIndex && editingCell?.columnName === column.name ? (
+                                  <div className="flex items-center gap-1">
+                                    <div className="relative flex-1">
+                                      <Input
+                                        ref={inputRef}
+                                        value={editValue}
+                                        onChange={handleEditChange}
+                                        onKeyDown={handleEditKeyDown}
+                                        className={`h-7 py-1 ${
+                                          validationResult && !validationResult.isValid 
+                                            ? "border-red-500 focus-visible:ring-red-500" 
+                                            : "focus-visible:ring-primary/40"
+                                        }`}
+                                        disabled={isEditing}
+                                      />
+                                      {validationResult && !validationResult.isValid && (
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <AlertCircle className="absolute right-2 top-1.5 h-4 w-4 text-red-500" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p className="text-xs">{validationResult.error}</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      )}
+                                    </div>
+                                    <div className="flex gap-1">
+                                      <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        className="h-6 w-6 text-green-600 hover:text-green-700 hover:bg-green-50" 
+                                        onClick={handleSaveEdit}
+                                        disabled={isEditing || (validationResult?.isValid === false)}
+                                      >
+                                        {isEditing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                                      </Button>
+                                      <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        className="h-6 w-6 text-red-600 hover:text-red-700 hover:bg-red-50" 
+                                        onClick={handleCancelEdit}
+                                        disabled={isEditing}
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <>
+                                    {formatCellValue(row[column.name], column)}
+                                    {isEditable && (
+                                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 rounded-full p-0.5">
+                                        <Edit2 className="h-3 w-3 text-primary/70" />
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      ))
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -884,14 +947,17 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
             {tableData.pagination.totalPages > 1 && (
               <div className="flex items-center justify-between px-2 mt-4">
                 <div className="text-sm text-muted-foreground">
-                  Page {currentPage} of {tableData.pagination.totalPages}
+                  {searchTerm.trim() 
+                    ? `Showing ${filteredData.length} of ${tableData.data.length} total rows`
+                    : `Page ${currentPage} of ${tableData.pagination.totalPages}`
+                  }
                 </div>
                 <div className="flex items-center space-x-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
+                    disabled={currentPage === 1 || !!searchTerm.trim()}
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -902,7 +968,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                     variant="outline"
                     size="sm"
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === tableData.pagination.totalPages}
+                    disabled={currentPage === tableData.pagination.totalPages || !!searchTerm.trim()}
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -915,6 +981,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                       setPageSize(Number(e.target.value));
                       setCurrentPage(1); // Reset to first page when changing page size
                     }}
+                    disabled={!!searchTerm.trim()}
                   >
                     <option value="10">10 rows</option>
                     <option value="25">25 rows</option>
