@@ -71,6 +71,7 @@ export default function RootLayout({
             gtag('config', 'AW-17050259656');
           `}
         </Script>
+        <Script async src='//pl26557402.profitableratecpm.com/5a/e9/c4/5ae9c49993c594670aaa1ca8b14aa64a.js'></Script>
       </head>
       <body className={cn(
         "min-h-screen bg-background font-sans antialiased",
