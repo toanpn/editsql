@@ -15,12 +15,12 @@ import { AlertCircle, Database } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import Link from "next/link";
 
 export default function Home() {
   // State for the uploaded file and tables
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [activeView, setActiveView] = useState<"table" | "sql">("table");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [tables, setTables] = useState<{ name: string }[]>([]);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,6 @@ export default function Home() {
   // Handle file upload
   const handleFileUpload = async (file: File) => {
     setIsLoading(true);
-    setUploadedFile(file);
     setError(null);
     
     try {
@@ -92,7 +91,25 @@ export default function Home() {
           <Database className="h-5 w-5 text-primary" />
           <h1 className="font-bold text-xl">SqlEditor</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+          <Link 
+            href="/blog" 
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Blog
+          </Link>
+          <Link 
+            href="/faq" 
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            FAQ
+          </Link>
+          <Link 
+            href="/about" 
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            About
+          </Link>
           <ThemeToggle />
           <ExportButton className={cn(
             "transition-all duration-200",

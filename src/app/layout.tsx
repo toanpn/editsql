@@ -14,9 +14,9 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "SQLite Editor Online - Free Online SQLite Database Editor",
-  description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. No installation required.",
-  keywords: "sqlite editor, online sqlite editor, sqlite database editor, edit sqlite online, sqlite web editor, sqlite online database editor",
+  title: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
+  description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. No installation required. Perfect for developers and database administrators.",
+  keywords: "sqlite editor online, edit sqlite online, sqlite database editor, sqlite web editor, online sqlite editor, sqlite online database editor, sqlite browser online, sqlite viewer online, sqlite database viewer, sqlite query editor, sqlite table editor, sqlite database management, sqlite online tool, sqlite web app, free sqlite editor, sql browser",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: "SQLite Editor Online - Free Online SQLite Database Editor",
-    description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export.",
+    title: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
+    description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. Perfect for developers and database administrators.",
     url: "https://www.sqleditor.online",
     siteName: "SQLite Editor Online",
     images: [
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
         url: "https://www.sqleditor.online/og-image.png",
         width: 1200,
         height: 630,
-        alt: "SQLite Editor Online",
+        alt: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
       },
     ],
     locale: "en_US",
@@ -47,9 +47,31 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SQLite Editor Online - Free Online SQLite Database Editor",
-    description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export.",
+    title: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
+    description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. Perfect for developers and database administrators.",
     images: ["https://www.sqleditor.online/og-image.png"],
+    creator: "@sqleditor",
+    site: "@sqleditor",
+  },
+  alternates: {
+    canonical: "https://www.sqleditor.online",
+    languages: {
+      'en-US': 'https://www.sqleditor.online',
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: "verificationcode", // Add your Google verification code
   },
 };
 
@@ -71,7 +93,77 @@ export default function RootLayout({
             gtag('config', 'AW-17050259656');
           `}
         </Script>
-        <Script async src='//pl26557402.profitableratecpm.com/5a/e9/c4/5ae9c49993c594670aaa1ca8b14aa64a.js'></Script>
+        {/* Structured Data for Web Application */}
+        <Script id="structured-data" type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "SQLite Editor Online",
+              "url": "https://www.sqleditor.online",
+              "description": "A free web-based SQLite database editor with features like table management, SQL query execution, and data export.",
+              "applicationCategory": "DeveloperApplication",
+              "operatingSystem": "Any",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "featureList": [
+                "Table Management",
+                "SQL Query Execution",
+                "Data Export",
+                "Interactive Table Viewer",
+                "SQL CLI"
+              ]
+            }
+          `}
+        </Script>
+        {/* Structured Data for Organization */}
+        <Script id="organization-data" type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "SQLite Editor Online",
+              "url": "https://www.sqleditor.online",
+              "logo": "https://www.sqleditor.online/logo.png",
+              "sameAs": [
+                "https://twitter.com/sqleditor",
+                "https://github.com/sqleditor"
+              ]
+            }
+          `}
+        </Script>
+        {/* Structured Data for BreadcrumbList */}
+        <Script id="breadcrumb-data" type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://www.sqleditor.online"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Blog",
+                  "item": "https://www.sqleditor.online/blog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "About",
+                  "item": "https://www.sqleditor.online/about"
+                }
+              ]
+            }
+          `}
+        </Script>
       </head>
       <body className={cn(
         "min-h-screen bg-background font-sans antialiased",

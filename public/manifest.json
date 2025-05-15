@@ -1,21 +1,42 @@
 {
   "name": "SQLite Editor Online",
   "short_name": "SQLEditor",
-  "description": "Free Online SQLite Database Editor",
+  "description": "Free web-based SQLite database editor with table management, SQL query execution, and data export capabilities.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4F46E5",
+  "theme_color": "#0f172a",
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["developer tools", "database", "productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "SQLite Editor Online Dashboard"
+    },
+    {
+      "src": "/screenshots/screenshot2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "SQL Query Execution in SQLite Editor"
+    }
+  ],
+  "orientation": "any",
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false
 } 
