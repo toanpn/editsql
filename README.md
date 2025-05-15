@@ -17,7 +17,7 @@ A web application to upload, view, edit, query, and export SQLite database files
 - File size limit: 10MB (for MVP)
 
 ## 🧩 Technology Stack
-   
+
 | Component | Technology |
 |-----------|------------|
 | Frontend | React 19 + Next.js 15 (TypeScript) |
@@ -63,7 +63,7 @@ sqlite-editor-webapp/
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone [<repository-url>](https://github.com/toanpn/editsql.git)
    cd sqlite-editor-webapp
    ```
 
