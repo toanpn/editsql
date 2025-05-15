@@ -1,4 +1,4 @@
-// Updated page component with table refresh and confirmation dialog
+// Updated page component with table refresh and F5 warning
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -12,8 +12,9 @@ import SidebarTables from "@/components/SidebarTables";
 import TableViewer from "@/components/TableViewer";
 import SQLCli from "@/components/SQLCli";
 import ExportButton from "@/components/ExportButton";
-import { AlertCircle, Database } from "lucide-react";
+import { AlertCircle, Database, Plus, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
@@ -26,6 +27,7 @@ export default function Home() {
   const [tables, setTables] = useState<{ name: string }[]>([]);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [isTableDataLoading, setIsTableDataLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -134,8 +136,60 @@ export default function Home() {
     }
   };
 
+  // Handle creating a new empty database
+  const handleCreateNew = async () => {
+    setIsCreatingNew(true);
+    setError(null);
+    
+    try {
+      // Send request to create a new empty database
+      const response = await fetch('/api/create-db', {
+        method: 'POST',
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create new database');
+      }
+      
+      // Store the session ID in localStorage for future use
+      if (data.sessionId) {
+        localStorage.setItem('sessionId', data.sessionId);
+        
+        // Set the tables in state
+        setTables(data.tables || []);
+        
+        // Select the sample table if available
+        if (data.tables && data.tables.length > 0) {
+          setSelectedTable(data.tables[0].name);
+        }
+        
+        toast({
+          title: "New database created",
+          description: "A new SQLite database with a sample table has been created",
+          duration: 3000,
+        });
+      }
+      
+      // Set file as uploaded
+      setIsFileUploaded(true);
+    } catch (error) {
+      console.error("Error creating new database:", error);
+      setError(error instanceof Error ? error.message : 'Failed to create new database');
+    } finally {
+      setIsCreatingNew(false);
+    }
+  };
+
   // Handle table selection
   const handleTableSelect = (tableName: string) => {
+    // If empty string is provided, clear the selection
+    if (!tableName) {
+      setSelectedTable(null);
+      return;
+    }
+    
     // Clear any previous table selection and set the new one
     setSelectedTable(tableName);
     // Set loading state to true - the TableViewer component will handle loading state internally
@@ -188,7 +242,33 @@ export default function Home() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <FileUploader onFileUpload={handleFileUpload} />
+            <div className="flex flex-col w-full gap-8">
+              <FileUploader onFileUpload={handleFileUpload} />
+              
+              <div className="text-center">
+                <div className="mb-2 text-muted-foreground">- OR -</div>
+                <Button 
+                  onClick={handleCreateNew} 
+                  disabled={isCreatingNew}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {isCreatingNew ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create New Empty Database
+                    </>
+                  )}
+                </Button>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  This will create a new empty SQLite database with a sample table
+                </p>
+              </div>
+            </div>
           </div>
         ) : (
           <ResizablePanelGroup
@@ -202,6 +282,7 @@ export default function Home() {
                 onSelectTable={handleTableSelect} 
                 selectedTable={selectedTable}
                 isLoading={isLoading}
+                onTableListChanged={fetchTables}
               />
             </ResizablePanel>
 

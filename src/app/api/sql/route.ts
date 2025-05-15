@@ -7,7 +7,7 @@ import fs from 'fs';
 const TMP_DIR = path.join(process.cwd(), 'tmp');
 
 // List of allowed query types
-const ALLOWED_QUERY_TYPES = ['SELECT', 'UPDATE', 'DELETE', 'INSERT', 'CREATE'];
+const ALLOWED_QUERY_TYPES = ['SELECT', 'UPDATE', 'DELETE', 'INSERT', 'CREATE', 'DROP'];
 
 // Maximum number of rows to return for SELECT queries
 const MAX_ROWS = 1000;
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
         // For SELECT queries, return the results as JSON
         try {
           const stmt = db.prepare(sql);
-          const results = stmt.all() as Record<string, any>[];
+          const results = stmt.all() as Record<string, unknown>[];
           
           // Limit the number of rows returned
           const limitedResults = results.slice(0, MAX_ROWS);
@@ -165,6 +165,7 @@ function getQueryType(sql: string): string | null {
   if (normalizedSql.startsWith('DELETE')) return 'DELETE';
   if (normalizedSql.startsWith('INSERT')) return 'INSERT';
   if (normalizedSql.startsWith('CREATE')) return 'CREATE';
+  if (normalizedSql.startsWith('DROP')) return 'DROP';
   
   return null;
 } 

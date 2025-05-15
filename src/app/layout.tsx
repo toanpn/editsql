@@ -83,6 +83,27 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Fix for pointer-events issue */}
+        <Script id="pointer-events-fix">
+          {`
+            // Function to reset pointer-events on the body
+            function resetPointerEvents() {
+              document.body.style.pointerEvents = 'auto';
+            }
+            
+            // Run on initial load
+            document.addEventListener('DOMContentLoaded', resetPointerEvents);
+            
+            // Also run periodically to catch any issues
+            setInterval(resetPointerEvents, 1000);
+            
+            // Run when any dialog or modal might close
+            document.addEventListener('click', function() {
+              setTimeout(resetPointerEvents, 100);
+            });
+          `}
+        </Script>
+        
         {/* Google tag (gtag.js) */}
         <Script async src="https://www.googletagmanager.com/gtag/js?id=AW-17050259656" />
         <Script id="google-analytics">
@@ -168,7 +189,9 @@ export default function RootLayout({
       <body className={cn(
         "min-h-screen bg-background font-sans antialiased",
         fontSans.variable
-      )}>
+      )}
+      style={{ pointerEvents: 'auto' }}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
