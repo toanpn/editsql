@@ -10,13 +10,14 @@ A web application to upload, view, edit, query, and export SQLite database files
 - Table listing and data viewer
 - In-place cell editing with auto-save
 - SQL CLI (supports SELECT, UPDATE, DELETE, CREATE TABLE)
+- Visual table designer with column type and constraint configuration
 - Filter data by column and value
 - Export modified database (`_edited` suffix)
 - Files auto-deleted when page is closed
 - File size limit: 10MB (for MVP)
 
 ## 🧩 Technology Stack
-
+   
 | Component | Technology |
 |-----------|------------|
 | Frontend | React 19 + Next.js 15 (TypeScript) |
