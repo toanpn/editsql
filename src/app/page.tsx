@@ -1,6 +1,7 @@
+// Updated page component with table refresh and confirmation dialog
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -16,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Home() {
   // State for the uploaded file and tables
@@ -26,6 +28,63 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isTableDataLoading, setIsTableDataLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Function to fetch tables
+  const fetchTables = useCallback(async () => {
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) return;
+    
+    setIsLoading(true);
+    try {
+      const tablesResponse = await fetch(`/api/tables?sessionId=${sessionId}`);
+      const tablesData = await tablesResponse.json();
+      
+      if (!tablesResponse.ok) {
+        throw new Error(tablesData.error || 'Failed to load tables');
+      }
+      
+      // Set the tables in state
+      setTables(tablesData.tables);
+      
+      // If current selected table no longer exists, clear selection
+      if (selectedTable && !tablesData.tables.some((t: { name: string }) => t.name === selectedTable)) {
+        setSelectedTable(null);
+      }
+      
+      toast({
+        title: "Tables refreshed",
+        description: "Table list has been updated",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Error fetching tables:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to fetch tables',
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedTable]);
+  
+  // Add event listener for beforeunload (page refresh)
+  useEffect(() => {
+    if (isFileUploaded) {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        // Show standard browser confirmation
+        e.returnValue = '';
+        return '';
+      };
+      
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }
+  }, [isFileUploaded]);
 
   // Handle file upload
   const handleFileUpload = async (file: File) => {
@@ -185,7 +244,9 @@ export default function Home() {
                       isLoading={isTableDataLoading} 
                     />
                   ) : (
-                    <SQLCli />
+                    <SQLCli 
+                      onTableListChanged={fetchTables}
+                    />
                   )}
                 </div>
               </div>

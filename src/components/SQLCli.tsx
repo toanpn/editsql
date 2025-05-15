@@ -37,6 +37,7 @@ import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface SQLCliProps {
   isLoading?: boolean;
+  onTableListChanged?: () => void;
 }
 
 interface SQLResult {
@@ -87,7 +88,7 @@ const enhanceSqlSyntax = (code: string): string => {
   return enhancedCode;
 };
 
-export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
+export const SQLCli = ({ isLoading: initialLoading = false, onTableListChanged }: SQLCliProps) => {
   // State for SQL query
   const [sqlQuery, setSqlQuery] = useState("");
   const [isLoading, setIsLoading] = useState(initialLoading);
@@ -145,6 +146,23 @@ export const SQLCli = ({ isLoading: initialLoading = false }: SQLCliProps) => {
 
       setResult(data);
       setQueryEndTime(Date.now());
+
+      // Check if the query might have changed the table structure
+      const upperQuery = sqlQuery.toUpperCase().trim();
+      const isTableStructureChange = 
+        upperQuery.startsWith('CREATE TABLE') || 
+        upperQuery.startsWith('DROP TABLE') || 
+        upperQuery.startsWith('ALTER TABLE') ||
+        upperQuery.includes('CREATE TRIGGER') ||
+        upperQuery.includes('DROP TRIGGER');
+
+      // If the query might have modified table structure, refresh the table list
+      if (isTableStructureChange && onTableListChanged) {
+        // Wait a small amount of time to ensure the operation completes on the server
+        setTimeout(() => {
+          onTableListChanged();
+        }, 500);
+      }
 
       // Show success toast
       toast({
