@@ -74,7 +74,7 @@ export default function FAQPage() {
         <div className="mt-16 text-center">
           <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
           <p className="mb-6">
-            If you couldn't find the answer you were looking for, feel free to contact us.
+            If you couldn&apos;t find the answer you were looking for, feel free to contact us.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 

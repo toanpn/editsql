@@ -48,7 +48,7 @@ export default function BlogPost() {
         <h1 className="text-4xl font-bold mb-6">5 Essential SQLite Commands Every Developer Should Know</h1>
         
         <p className="lead">
-          SQLite is one of the most widely used database engines in the world. Whether you're building a mobile app, a desktop application, or a simple website, knowing these five essential SQLite commands will help you manage your database more efficiently.
+          SQLite is one of the most widely used database engines in the world. Whether you&apos;re building a mobile app, a desktop application, or a simple website, knowing these five essential SQLite commands will help you manage your database more efficiently.
         </p>
         
         <h2 id="create-table">1. CREATE TABLE - Building Your Database Foundation</h2>
@@ -67,12 +67,12 @@ export default function BlogPost() {
           </code>
         </pre>
         <p>
-          This example creates a table named "users" with columns for ID, username, email, password, and a timestamp for when the record was created.
+          This example creates a table named &quot;users&quot; with columns for ID, username, email, password, and a timestamp for when the record was created.
         </p>
         
         <h2 id="insert">2. INSERT INTO - Adding Data to Your Tables</h2>
         <p>
-          Once you have created your tables, you'll need to add data to them. The <code>INSERT INTO</code> command allows you to add new records to your tables.
+          Once you have created your tables, you&apos;ll need to add data to them. The <code>INSERT INTO</code> command allows you to add new records to your tables.
         </p>
         <pre className="language-sql">
           <code>
@@ -116,7 +116,7 @@ WHERE username = 'johndoe';`}
           </code>
         </pre>
         <p>
-          This command updates the email address for the user with the username 'johndoe'.
+          This command updates the email address for the user with the username &apos;johndoe&apos;.
         </p>
         
         <h2 id="delete">5. DELETE - Removing Data from Your Tables</h2>

@@ -24,7 +24,8 @@ import {
   Edit2,
   PlusCircle,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Trash2
 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -143,6 +144,11 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
   
   // Add a state to track when a row was added (used to trigger reload)
   const [lastRowAddedAt, setLastRowAddedAt] = useState<number | null>(null);
+
+  // Add state for delete row confirmation dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [rowToDelete, setRowToDelete] = useState<{index: number; row: Record<string, unknown>} | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch table data when a table is selected or pagination changes or a row is added
   useEffect(() => {
@@ -648,6 +654,113 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
     return column?.pk === 1 && (column?.type.toUpperCase().includes('INTEGER'));
   };
 
+  // Handle row deletion
+  const handleDeleteRow = async () => {
+    if (!rowToDelete || !tableData) return;
+    
+    setIsDeleting(true);
+    
+    try {
+      // Get the row data
+      const row = rowToDelete.row;
+      
+      // Find primary key column for the row identifier
+      const pkColumn = tableData.columns.find(col => col.pk === 1);
+      
+      // Create a row identifier - either using primary key or fallback to using all columns
+      let rowIdentifier;
+      
+      if (pkColumn) {
+        // If we have a primary key, use it
+        rowIdentifier = {
+          column: pkColumn.name,
+          value: row[pkColumn.name]
+        };
+      } else {
+        // Fallback: Create a composite identifier using all column values
+        const identifierColumns = tableData.columns.map(col => ({
+          column: col.name,
+          value: row[col.name]
+        }));
+        
+        if (identifierColumns.length === 0) {
+          throw new Error("Cannot delete from this table - no way to uniquely identify rows");
+        }
+        
+        rowIdentifier = {
+          compositeIdentifier: identifierColumns
+        };
+      }
+
+      // Get session ID
+      const sessionId = localStorage.getItem('sessionId');
+      if (!sessionId) {
+        throw new Error('No session ID found');
+      }
+
+      // Call the delete API
+      const response = await fetch(`/api/delete?sessionId=${sessionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tableName: tableData.tableName,
+          rowIdentifier,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete row');
+      }
+
+      // Update the data in the local state
+      const newData = [...tableData.data];
+      newData.splice(rowToDelete.index, 1);
+      
+      setTableData({
+        ...tableData,
+        data: newData,
+        pagination: {
+          ...tableData.pagination,
+          totalRows: tableData.pagination.totalRows - 1,
+          totalPages: Math.ceil((tableData.pagination.totalRows - 1) / tableData.pagination.limit)
+        }
+      });
+      
+      // Close dialog and show success message
+      setIsDeleteDialogOpen(false);
+      setRowToDelete(null);
+      
+      toast({
+        title: "Row deleted",
+        description: "Successfully deleted row from table",
+        duration: 3000,
+        variant: "default",
+        className: "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800",
+        action: <CheckCircle2 className="h-5 w-5 text-green-500" />
+      });
+      
+    } catch (error) {
+      console.error("Error deleting row:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to delete row',
+        variant: "destructive",
+        action: <XCircle className="h-5 w-5" />
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+  
+  // Handle opening delete dialog
+  const handleOpenDeleteDialog = (rowIndex: number, row: Record<string, unknown>) => {
+    setRowToDelete({ index: rowIndex, row });
+    setIsDeleteDialogOpen(true);
+  };
+
   // If no table is selected, show a message
   if (!selectedTable) {
     return (
@@ -837,13 +950,17 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                         </div>
                       </TableHead>
                     ))}
+                    {/* Add an action column header */}
+                    <TableHead className="w-16 text-center font-medium">
+                      <span className="text-primary">Actions</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {tableData.data.length === 0 ? (
                     <TableRow>
                       <TableCell 
-                        colSpan={tableData.columns.length}
+                        colSpan={tableData.columns.length + 1} /* +1 for the action column */
                         className="h-24 text-center"
                       >
                         No results.
@@ -853,7 +970,7 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                     filteredData.length === 0 ? (
                       <TableRow>
                         <TableCell 
-                          colSpan={tableData.columns.length}
+                          colSpan={tableData.columns.length + 1} /* +1 for the action column */
                           className="h-24 text-center"
                         >
                           No matching results found.
@@ -935,6 +1052,27 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                               </TableCell>
                             );
                           })}
+                          {/* Add an action column with delete button */}
+                          <TableCell className="w-16 p-2 text-center">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  size="icon" 
+                                  variant="ghost" 
+                                  className="h-7 w-7 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenDeleteDialog(rowIndex, row);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="text-xs">Delete row</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TableCell>
                         </TableRow>
                       ))
                     )
@@ -1070,6 +1208,62 @@ export const TableViewer = ({ selectedTable = null, isLoading: initialLoading = 
                     <>
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Add Row
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Delete Row Confirmation Dialog */}
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogContent className="sm:max-w-[400px]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center space-x-2 text-red-600">
+                  <Trash2 className="h-5 w-5" />
+                  <span>Delete Row</span>
+                </DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to delete this row? This action cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                {rowToDelete && (
+                  <div className="border rounded-md overflow-hidden">
+                    <div className="bg-muted/50 p-2 text-sm font-medium">Row data:</div>
+                    <div className="p-3 space-y-2 max-h-[200px] overflow-y-auto">
+                      {tableData && tableData.columns.map((column) => (
+                        <div key={column.name} className="grid grid-cols-2 gap-2 text-sm">
+                          <div className="font-medium">{column.name}:</div>
+                          <div className="truncate">
+                            {rowToDelete.row[column.name] === null 
+                              ? <span className="text-muted-foreground italic">NULL</span> 
+                              : String(rowToDelete.row[column.name])}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button 
+                  variant="destructive"
+                  onClick={handleDeleteRow}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
                     </>
                   )}
                 </Button>
