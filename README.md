@@ -2,6 +2,8 @@
 
 A web application to upload, view, edit, query, and export SQLite database files.
 
+> 🌐 Try the online version at [sqleditor.online](https://sqleditor.online/)
+
 ## 🔥 Features
 
 - Drag-and-drop SQLite file upload (.sqlite, .db)
