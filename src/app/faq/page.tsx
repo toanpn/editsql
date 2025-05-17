@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Script from "next/script";
 import { Metadata } from "next";
+import { Database } from "lucide-react"; 
 
 export const metadata: Metadata = {
   title: "SQLite Editor Online FAQ - Frequently Asked Questions",
@@ -53,45 +54,77 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-          <p className="text-xl text-muted-foreground">
-            Find answers to common questions about SQLite Editor Online
-          </p>
+    <main className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="border-b bg-gradient-to-r from-background to-muted p-4 flex justify-between items-center shadow-sm">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-primary" />
+            <h1 className="font-bold text-xl">SqlEditor</h1>
+          </Link>
         </div>
+        <div className="flex items-center gap-4">
+          <nav className="hidden md:flex space-x-4">
+            <Link href="/" className="text-sm hover:text-primary">Home</Link>
+            <Link href="/about" className="text-sm hover:text-primary">About</Link>
+            <Link href="/faq" className="text-sm font-medium text-primary">FAQ</Link>
+            <Link href="/blog" className="text-sm hover:text-primary">Blog</Link>
+          </nav>
+        </div>
+      </header>
 
-        <div className="space-y-8">
-          {faqs.map((faq, index) => (
-            <div key={index} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-              <h2 className="text-xl font-bold mb-3" id={`faq-${index}`}>{faq.question}</h2>
-              <p className="text-muted-foreground">{faq.answer}</p>
+      {/* Main Content */}
+      <div className="flex-1 py-12 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
+            <p className="text-xl text-muted-foreground">
+              Find answers to common questions about SQLite Editor Online
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            {faqs.map((faq, index) => (
+              <div key={index} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+                <h2 className="text-xl font-bold mb-3" id={`faq-${index}`}>{faq.question}</h2>
+                <p className="text-muted-foreground">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
+            <p className="mb-6">
+              If you couldn&apos;t find the answer you were looking for, feel free to contact us.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/"
+                className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                Try SQLite Editor
+              </Link>
+              <Link 
+                href="/about"
+                className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90"
+              >
+                Learn More
+              </Link>
             </div>
-          ))}
-        </div>
-
-        <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-          <p className="mb-6">
-            If you couldn&apos;t find the answer you were looking for, feel free to contact us.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/"
-              className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Try SQLite Editor
-            </Link>
-            <Link 
-              href="/about"
-              className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90"
-            >
-              Learn More
-            </Link>
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t py-4 px-4 text-center text-xs text-muted-foreground bg-muted/30">
+        <div className="flex justify-center space-x-4 mb-2">
+          <Link href="/" className="hover:text-primary">Home</Link>
+          <Link href="/about" className="hover:text-primary">About</Link>
+          <Link href="/faq" className="text-primary">FAQ</Link>
+          <Link href="/blog" className="hover:text-primary">Blog</Link>
+        </div>
+        <p>SQLite Editor Online - Version 0.0.1</p>
+      </footer>
 
       {/* FAQPage Structured Data */}
       <Script id="faq-structured-data" type="application/ld+json">
