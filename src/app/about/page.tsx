@@ -3,6 +3,7 @@
 import { Database, Heart, Code, Zap, Shield, Download } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function About() {
   return (
@@ -10,10 +11,18 @@ export default function About() {
       {/* Header */}
       <header className="border-b bg-gradient-to-r from-background to-muted p-4 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
-          <Database className="h-5 w-5 text-primary" />
-          <h1 className="font-bold text-xl">SqlEditor</h1>
+          <Link href="/" className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-primary" />
+            <h1 className="font-bold text-xl">SqlEditor</h1>
+          </Link>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+          <nav className="hidden md:flex space-x-4">
+            <Link href="/" className="text-sm hover:text-primary">Home</Link>
+            <Link href="/about" className="text-sm font-medium text-primary">About</Link>
+            <Link href="/faq" className="text-sm hover:text-primary">FAQ</Link>
+            <Link href="/blog" className="text-sm hover:text-primary">Blog</Link>
+          </nav>
           <ThemeToggle />
         </div>
       </header>
@@ -108,7 +117,13 @@ export default function About() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t py-2 px-4 text-center text-xs text-muted-foreground bg-muted/30">
+      <footer className="border-t py-4 px-4 text-center text-xs text-muted-foreground bg-muted/30">
+        <div className="flex justify-center space-x-4 mb-2">
+          <Link href="/" className="hover:text-primary">Home</Link>
+          <Link href="/about" className="text-primary">About</Link>
+          <Link href="/faq" className="hover:text-primary">FAQ</Link>
+          <Link href="/blog" className="hover:text-primary">Blog</Link>
+        </div>
         <p>SQLite Editor Online - Version 0.0.1</p>
       </footer>
     </main>

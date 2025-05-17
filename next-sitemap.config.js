@@ -14,7 +14,7 @@ module.exports = {
       'https://www.sqleditor.online/blog-sitemap.xml',
     ],
   },
-  changefreq: 'daily',
+  changefreq: 'weekly',
   priority: 0.7,
   sitemapSize: 7000,
   exclude: ['/api/*', '/_next/*', '/404', '/500'],
@@ -28,6 +28,16 @@ module.exports = {
         loc: path,
         changefreq: 'daily',
         priority: 1.0,
+        lastmod: new Date().toISOString(),
+      }
+    }
+    
+    // Important pages get higher priority
+    if (path === '/about' || path === '/faq') {
+      return {
+        loc: path,
+        changefreq: 'weekly',
+        priority: 0.9,
         lastmod: new Date().toISOString(),
       }
     }
