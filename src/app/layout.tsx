@@ -54,7 +54,6 @@ export const metadata: Metadata = {
     site: "@sqleditor",
   },
   alternates: {
-    canonical: "https://www.sqleditor.online",
     languages: {
       'en-US': 'https://www.sqleditor.online',
     },

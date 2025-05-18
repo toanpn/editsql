@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "5 Essential SQLite Commands Every Developer Should Know | SQLite Editor",
   description: "Master the 5 most important SQLite commands that will help you become more efficient with database management. Perfect for beginners and intermediate developers.",
   keywords: "sqlite commands, essential sqlite commands, sqlite select, sqlite insert, sqlite update, sqlite delete, sqlite create table",
+  alternates: {
+    canonical: "https://www.sqleditor.online/blog/essential-sqlite-commands",
+  },
   openGraph: {
     title: "5 Essential SQLite Commands Every Developer Should Know",
     description: "Master the 5 most important SQLite commands that will help you become more efficient with database management.",
