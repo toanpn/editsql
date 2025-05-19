@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "SQLite Editor Blog - Tips and Tutorials for SQLite Database Management",
   description: "Learn SQLite database management, tips, and best practices. Our SQLite editor blog offers tutorials, guides, and resources for developers of all levels.",
   keywords: "sqlite tutorials, sqlite tips, sqlite database management, sqlite blog, sqlite best practices, sqlite editor tips",
+  alternates: {
+    canonical: "https://www.sqleditor.online/blog",
+  },
 };
 
 const blogPosts = [
