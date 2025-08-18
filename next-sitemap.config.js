@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: 'https://www.sqleditor.online',
-  generateRobotsTxt: true,
+  generateRobotsTxt: false, // Disable auto-generation to use custom robots.txt
   robotsTxtOptions: {
     policies: [
       {
@@ -20,6 +20,10 @@ module.exports = {
   exclude: ['/api/*', '/_next/*', '/404', '/500'],
   generateIndexSitemap: true,
   outDir: 'public',
+  additionalPaths: async (config) => [
+    await config.transform(config, '/blog/essential-sqlite-commands'),
+    // Add other blog post paths here as you create them
+  ],
   transform: async (config, path) => {
     // Custom transformation for URLs
     // Set higher priority for important pages

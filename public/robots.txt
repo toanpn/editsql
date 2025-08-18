@@ -5,8 +5,6 @@ Allow: /
 # Sitemap locations
 Sitemap: https://www.sqleditor.online/sitemap.xml
 Sitemap: https://www.sqleditor.online/site-sitemap.xml
-Sitemap: https://www.sqleditor.online/sitemap-0.xml
-Sitemap: https://www.sqleditor.online/blog-sitemap.xml
 
 # Block crawling of specific files and directories if needed
 Disallow: /api/
