@@ -590,7 +590,7 @@ SELECT id, name, description FROM products;`}
           <h2 id="anti-patterns">7. Common Anti-Patterns to Avoid</h2>
           <ul>
             <li><strong>No Primary Keys:</strong> Always define primary keys for referential integrity</li>
-            <li><strong>Generic Column Names:</strong> Avoid names like "data", "info", "value"</li>
+            <li><strong>Generic Column Names:</strong> Avoid names like &quot;data&quot;, &quot;info&quot;, &quot;value&quot;</li>
             <li><strong>Over-normalization:</strong> Don&apos;t normalize to the point of performance degradation</li>
             <li><strong>Under-normalization:</strong> Avoid excessive data duplication</li>
             <li><strong>Missing Constraints:</strong> Use constraints to enforce data integrity</li>

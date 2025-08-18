@@ -246,7 +246,7 @@ mysqldump -u username -p --compact --no-create-info --single-transaction \
     database_name > mysql_data.sql
 
 # Convert MySQL dump to SQLite format
-sed -i 's/`//g' mysql_data.sql  # Remove backticks
+sed -i 's/\`//g' mysql_data.sql  # Remove backticks
 sed -i 's/ENGINE=InnoDB//g' mysql_data.sql  # Remove engine specification
 sed -i 's/AUTO_INCREMENT=[0-9]*//g' mysql_data.sql  # Remove auto_increment values
 
