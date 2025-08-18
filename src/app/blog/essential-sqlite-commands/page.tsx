@@ -166,6 +166,20 @@ WHERE id = 1;`}
           </ul>
         </div>
       </article>
+
+      {/* Footer */}
+      <footer className="border-t py-4 px-4 text-center text-xs text-muted-foreground bg-muted/30">
+        <div className="flex justify-center space-x-4 mb-2">
+          <Link href="/" className="hover:text-primary">Home</Link>
+          <Link href="/about" className="hover:text-primary">About</Link>
+          <Link href="/faq" className="hover:text-primary">FAQ</Link>
+          <Link href="/blog" className="text-primary">Blog</Link>
+        </div>
+        <p>SQLite Editor Online - Version 0.0.1</p>
+        <p className="mt-1">
+          Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
+        </p>
+      </footer>
     </main>
   );
 } 

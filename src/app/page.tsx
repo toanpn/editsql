@@ -339,6 +339,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t py-2 px-4 text-center text-xs text-muted-foreground bg-muted/30">
         <p>SqlEditor - Version 0.0.1</p>
+        <p className="mt-1">
+          Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
+        </p>
       </footer>
     </main>
   );

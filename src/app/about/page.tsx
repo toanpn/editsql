@@ -125,6 +125,9 @@ export default function About() {
           <Link href="/blog" className="hover:text-primary">Blog</Link>
         </div>
         <p>SQLite Editor Online - Version 0.0.1</p>
+        <p className="mt-1">
+          Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
+        </p>
       </footer>
     </main>
   );
