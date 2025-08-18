@@ -1,12 +1,12 @@
 # Docker Deployment Guide for SQLite Editor WebApp
 
-This guide provides instructions on how to deploy the SQLite Editor WebApp using Docker.
+This guide provides instructions on how to deploy the SQLite Editor WebApp using Docker on a VPS server.
 
 ## Prerequisites
 
 - Docker (version 20.10.0 or later)
 - Docker Compose (version 2.0.0 or later)
-- A server with SSH access
+- A VPS server with SSH access
 
 ## Deployment Steps
 
@@ -27,7 +27,7 @@ This command builds the Docker image and starts the container in detached mode.
 
 ### 3. Verify the deployment
 
-Access the application at `http://your-server-ip:3000`.
+Access the application at `http://your-vps-ip:3000`.
 
 ## Configuration Options
 
@@ -66,6 +66,31 @@ server {
 3. Enable the site: `ln -s /etc/nginx/sites-available/sqlite-editor.conf /etc/nginx/sites-enabled/`
 4. Test the configuration: `nginx -t`
 5. Reload Nginx: `systemctl reload nginx`
+
+## VPS Deployment with GitHub Actions
+
+The project includes automated deployment to your VPS using GitHub Actions. To set this up:
+
+### Required GitHub Secrets
+
+Configure the following secrets in your GitHub repository settings:
+
+- `VPS_HOST`: Your VPS server IP address or domain
+- `VPS_USERNAME`: Your VPS username
+- `VPS_PORT`: SSH port (usually 22)
+- `VPS_PASSWORD`: Your VPS password for SSH access
+
+### Deployment Process
+
+The deployment automatically triggers when you push to the `release` branch. The workflow will:
+
+1. Install sshpass for password-based SSH authentication
+2. Connect to your VPS via SSH using password authentication
+3. Install Docker and Git if not present
+4. Clone or update the repository
+5. Build the Docker image
+6. Stop any existing container
+7. Start a new container with the updated code
 
 ## Maintenance
 
@@ -141,4 +166,13 @@ Check if Docker container is running:
 
 ```bash
 docker-compose ps
-``` 
+```
+
+### VPS Connection Issues
+
+If the GitHub Actions deployment fails:
+
+1. Verify your VPS secrets are correctly configured
+2. Ensure your VPS allows SSH connections on the specified port
+3. Check that your VPS password is correct
+4. Verify Docker is installed and running on your VPS 

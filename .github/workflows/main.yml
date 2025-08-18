@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy to VPS
 
 on:
   push:
@@ -13,50 +13,50 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup SSH key for EC2
+    - name: Install sshpass for password authentication
       run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+        sudo apt-get update
+        sudo apt-get install -y sshpass
 
-    - name: SSH into EC2 and deploy
+    - name: SSH into VPS and deploy
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
 
-          # Cài git và docker nếu chưa có
+          # Install git and docker if not available
           if ! command -v git &> /dev/null; then
-            sudo dnf install git -y || sudo yum install git -y
+            sudo apt update && sudo apt install git -y || sudo yum install git -y || sudo dnf install git -y
           fi
           if ! command -v docker &> /dev/null; then
-            sudo yum install -y docker
-            sudo service docker start
-            sudo usermod -a -G docker ec2-user
+            sudo apt update && sudo apt install docker.io -y || sudo yum install -y docker || sudo dnf install -y docker
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -a -G docker ${{ secrets.VPS_USERNAME }}
           fi
 
           # Trust github.com
           ssh-keyscan github.com >> ~/.ssh/known_hosts || true
 
-          # Pull hoặc clone code
+          # Pull or clone code
           cd ~
           if [ -d "editsql" ]; then
             cd editsql
             git pull origin release
           else
-            git clone git@github.com:toanpn/editsql.git editsql
+            git clone https://github.com/toanpn/editsql.git editsql
             cd editsql
           fi
 
-          # Build lại Docker image
+          # Build Docker image
           docker build -t editsql:latest .
 
-          # Nếu container đang chạy thì stop và remove
+          # Stop and remove existing container if running
           if [ $(docker ps -a -q -f name=editsql-container) ]; then
             docker stop editsql-container
             docker rm editsql-container
           fi
 
-          # Run container mới
+          # Run new container
           docker run -d --name editsql-container --restart always -p 3000:3000 editsql:latest
 
         EOF
