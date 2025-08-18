@@ -50,6 +50,30 @@ const blogPosts = [
     excerpt: "Master complex SQLite queries that will help you extract valuable insights from your data.",
     date: "2023-06-28",
     tags: ["SQLite", "Queries", "Data Analysis", "Advanced"]
+  },
+  {
+    id: 6,
+    title: "SQLite Security Best Practices for Web Applications",
+    slug: "sqlite-security-best-practices",
+    excerpt: "Learn how to secure your SQLite databases and prevent common security vulnerabilities in web applications.",
+    date: "2023-12-01",
+    tags: ["SQLite", "Security", "Best Practices", "Web Development"]
+  },
+  {
+    id: 7,
+    title: "Database Schema Design Patterns for SQLite",
+    slug: "sqlite-schema-design-patterns",
+    excerpt: "Explore proven database design patterns and normalization techniques specifically for SQLite applications.",
+    date: "2023-11-18",
+    tags: ["SQLite", "Schema Design", "Database Design", "Patterns"]
+  },
+  {
+    id: 8,
+    title: "Migrating from MySQL to SQLite: A Complete Guide",
+    slug: "migrating-mysql-to-sqlite",
+    excerpt: "Step-by-step guide to migrating your MySQL database to SQLite, including schema conversion and data transfer.",
+    date: "2023-10-30",
+    tags: ["SQLite", "MySQL", "Migration", "Database Transfer"]
   }
 ];
 
@@ -64,26 +88,34 @@ export default function BlogPage() {
           </p>
         </div>
 
-        <div className="space-y-12">
+        <div className="grid gap-8 md:grid-cols-2">
           {blogPosts.map((post) => (
-            <article key={post.id} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-              <div className="space-y-3">
+            <article key={post.id} className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card">
+              <div className="space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                  <time dateTime={post.date}>{post.date}</time>
+                  <time dateTime={post.date}>
+                    {new Date(post.date).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </time>
                   <span>•</span>
                   <span>{post.tags.join(", ")}</span>
                 </div>
                 
-                <h2 className="text-2xl font-bold">
-                  <Link href={`/blog/${post.slug}`} className="hover:underline">{post.title}</Link>
+                <h2 className="text-2xl font-bold leading-tight">
+                  <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+                    {post.title}
+                  </Link>
                 </h2>
                 
-                <p className="text-muted-foreground">{post.excerpt}</p>
+                <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>
                 
-                <div className="pt-3">
+                <div className="pt-2">
                   <Link 
                     href={`/blog/${post.slug}`}
-                    className="text-primary hover:underline inline-flex items-center"
+                    className="text-primary hover:underline inline-flex items-center font-medium"
                   >
                     Read more
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,20 +127,45 @@ export default function BlogPage() {
             </article>
           ))}
         </div>
+
+        <div className="mt-16 text-center">
+          <div className="p-8 border rounded-lg bg-muted/30">
+            <h2 className="text-2xl font-bold mb-4">Stay Updated</h2>
+            <p className="text-muted-foreground mb-6">
+              Get notified when we publish new SQLite tutorials and guides.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link 
+                href="/"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+              >
+                Try SQLite Editor Now
+              </Link>
+              <Link 
+                href="/faq"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary text-primary hover:bg-primary/10 font-medium"
+              >
+                View FAQ
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
-      <footer className="border-t py-4 px-4 text-center text-xs text-muted-foreground bg-muted/30">
-        <div className="flex justify-center space-x-4 mb-2">
-          <Link href="/" className="hover:text-primary">Home</Link>
-          <Link href="/about" className="hover:text-primary">About</Link>
-          <Link href="/faq" className="hover:text-primary">FAQ</Link>
-          <Link href="/blog" className="text-primary">Blog</Link>
+      <footer className="border-t py-6 px-4 text-center text-xs text-muted-foreground bg-muted/30 mt-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-center space-x-6 mb-4">
+            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <Link href="/about" className="hover:text-primary transition-colors">About</Link>
+            <Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link>
+            <Link href="/blog" className="text-primary font-medium">Blog</Link>
+          </div>
+          <p className="mb-2">SQLite Editor Online - Version 0.0.1</p>
+          <p>
+            Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
+          </p>
         </div>
-        <p>SQLite Editor Online - Version 0.0.1</p>
-        <p className="mt-1">
-          Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
-        </p>
       </footer>
     </main>
   );
