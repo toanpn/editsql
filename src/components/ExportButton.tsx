@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, FileDown } from 'lucide-react';
+import { Loader2, FileDown } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -23,9 +23,15 @@ export const ExportButton = ({ className = "" }: ExportButtonProps) => {
         throw new Error('No session ID found. Please upload a database file first.');
       }
 
-      // For downloads, we need to navigate to the URL directly
-      // This will trigger the browser's download behavior
-      window.location.href = `/api/export?sessionId=${sessionId}`;
+      // Create a temporary anchor element to trigger download without page navigation
+      // This avoids triggering the beforeunload event
+      const downloadUrl = `/api/export?sessionId=${sessionId}`;
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
       // Show success toast
       toast({
