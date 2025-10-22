@@ -128,6 +128,14 @@ export default async function LocaleLayout({
             gtag('config', 'AW-17050259656');
           `}
         </Script>
+        
+        {/* Google AdSense */}
+        <Script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2917337706488166"
+          crossOrigin="anonymous"
+        />
+        
         {/* Structured Data for Web Application */}
         <Script id="structured-data" type="application/ld+json">
           {`
