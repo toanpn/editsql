@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "SqlEditor",
+    "version": "Version 0.0.1",
+    "requestFeatures": "Request new features",
+    "email": "toanphamhsgs@gmail.com"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "faq": "FAQ",
+    "blog": "Blog"
+  },
+  "home": {
+    "title": "Open SQLite Database",
+    "subtitle": "Upload a SQLite database file to view and edit its contents",
+    "dragDrop": "Drag & drop your SQLite file here",
+    "supportedFormats": "Supported formats: .sqlite, .db (Max: 10MB)",
+    "selectFile": "Select File",
+    "chooseDifferent": "Choose Different File",
+    "uploading": "Uploading...",
+    "or": "- OR -",
+    "createNew": "Create New Empty Database",
+    "creating": "Creating...",
+    "createNewDesc": "This will create a new empty SQLite database with a sample table",
+    "tableView": "Table View",
+    "sqlCli": "SQL CLI",
+    "tablesRefreshed": "Tables refreshed",
+    "tableListUpdated": "Table list has been updated",
+    "error": "Error",
+    "newDbCreated": "New database created",
+    "newDbCreatedDesc": "A new SQLite database with a sample table has been created",
+    "invalidFileType": "Invalid file type. Only .sqlite, .db files are allowed.",
+    "fileTooLarge": "File is too large. Maximum size is 10MB.",
+    "failedToUpload": "Failed to upload file",
+    "failedToCreate": "Failed to create new database"
+  },
+  "about": {
+    "title": "About SQLite Editor Online",
+    "whatIs": "What is SQLite Editor Online?",
+    "whatIsDesc": "SQLite Editor Online is a powerful, web-based SQLite database editor that allows you to manage and interact with your SQLite databases directly in your browser. No installation required - simply upload your SQLite database file and start editing. Perfect for developers, database administrators, and anyone who needs to work with SQLite databases.",
+    "keyFeatures": "Key Features",
+    "sqlQueryEditor": "SQL Query Editor",
+    "sqlQueryEditorDesc": "Execute custom SQL queries with syntax highlighting and error checking",
+    "interactiveTable": "Interactive Table View",
+    "interactiveTableDesc": "View and edit table data with sorting, filtering, and pagination",
+    "securePrivate": "Secure & Private",
+    "securePrivateDesc": "Your data stays in your browser - no server storage",
+    "exportOptions": "Export Options",
+    "exportOptionsDesc": "Export your data in various formats including CSV and JSON",
+    "supportProject": "Support the Project",
+    "loveUsing": "Love using SQLite Editor Online?",
+    "supportDesc": "If you find SQLite Editor Online helpful and would like to support its development, consider making a donation. Your support helps maintain and improve the project, ensuring it remains free and accessible to everyone.",
+    "sponsorGithub": "Sponsor on GitHub",
+    "buyMeCoffee": "Buy me a coffee",
+    "scanToDonate": "Scan to donate via Buy Me a Coffee"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about SQLite Editor Online",
+    "stillQuestions": "Still have questions?",
+    "stillQuestionsDesc": "If you couldn't find the answer you were looking for, feel free to contact us or check out our comprehensive guides.",
+    "tryNow": "Try SQLite Editor Now",
+    "gettingStarted": "Getting Started Guide",
+    "browseTutorials": "Browse Tutorials",
+    "needMoreHelp": "Need More Help?",
+    "contactDesc": "Contact us directly for technical support or feature requests:"
+  },
+  "export": {
+    "export": "Export",
+    "exportDb": "Export Database"
+  }
+}
+

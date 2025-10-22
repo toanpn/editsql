@@ -1,4 +1,3 @@
-// Updated page component with table refresh and F5 warning
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -17,10 +16,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const t = useTranslations();
   // State for the uploaded file and tables
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [activeView, setActiveView] = useState<"table" | "sql">("table");
@@ -54,14 +56,14 @@ export default function Home() {
       }
       
       toast({
-        title: "Tables refreshed",
-        description: "Table list has been updated",
+        title: t('home.tablesRefreshed'),
+        description: t('home.tableListUpdated'),
         duration: 3000,
       });
     } catch (error) {
       console.error("Error fetching tables:", error);
       toast({
-        title: "Error",
+        title: t('home.error'),
         description: error instanceof Error ? error.message : 'Failed to fetch tables',
         variant: "destructive",
       });
@@ -166,8 +168,8 @@ export default function Home() {
         }
         
         toast({
-          title: "New database created",
-          description: "A new SQLite database with a sample table has been created",
+          title: t('home.newDbCreated'),
+          description: t('home.newDbCreatedDesc'),
           duration: 3000,
         });
       }
@@ -202,27 +204,28 @@ export default function Home() {
       <header className="border-b bg-gradient-to-r from-background to-muted p-4 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <Database className="h-5 w-5 text-primary" />
-          <h1 className="font-bold text-xl">SqlEditor</h1>
+          <h1 className="font-bold text-xl">{t('common.appName')}</h1>
         </div>
         <div className="flex items-center gap-4">
           <Link 
             href="/blog" 
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Blog
+            {t('navigation.blog')}
           </Link>
           <Link 
             href="/faq" 
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            FAQ
+            {t('navigation.faq')}
           </Link>
           <Link 
             href="/about" 
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            About
+            {t('navigation.about')}
           </Link>
+          <LanguageSwitcher />
           <ThemeToggle />
           <ExportButton className={cn(
             "transition-all duration-200",
@@ -238,7 +241,7 @@ export default function Home() {
             {error && (
               <Alert variant="destructive" className="mb-6 w-full">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>{t('home.error')}</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -246,7 +249,7 @@ export default function Home() {
               <FileUploader onFileUpload={handleFileUpload} />
               
               <div className="text-center">
-                <div className="mb-2 text-muted-foreground">- OR -</div>
+                <div className="mb-2 text-muted-foreground">{t('home.or')}</div>
                 <Button 
                   onClick={handleCreateNew} 
                   disabled={isCreatingNew}
@@ -255,17 +258,17 @@ export default function Home() {
                   {isCreatingNew ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
+                      {t('home.creating')}
                     </>
                   ) : (
                     <>
                       <Plus className="mr-2 h-4 w-4" />
-                      Create New Empty Database
+                      {t('home.createNew')}
                     </>
                   )}
                 </Button>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  This will create a new empty SQLite database with a sample table
+                  {t('home.createNewDesc')}
                 </p>
               </div>
             </div>
@@ -302,7 +305,7 @@ export default function Home() {
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     )}
                   >
-                    Table View
+                    {t('home.tableView')}
                   </button>
                   <button
                     onClick={() => setActiveView("sql")}
@@ -313,7 +316,7 @@ export default function Home() {
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     )}
                   >
-                    SQL CLI
+                    {t('home.sqlCli')}
                   </button>
                 </div>
 
@@ -338,9 +341,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t py-2 px-4 text-center text-xs text-muted-foreground bg-muted/30">
-        <p>SqlEditor - Version 0.0.1</p>
+        <p>{t('common.appName')} - {t('common.version')}</p>
         <p className="mt-1">
-          Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
+          {t('common.requestFeatures')}: <a href={`mailto:${t('common.email')}`} className="text-primary hover:underline">{t('common.email')}</a>
         </p>
       </footer>
     </main>

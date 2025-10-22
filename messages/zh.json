@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "SqlEditor",
+    "version": "版本 0.0.1",
+    "requestFeatures": "请求新功能",
+    "email": "toanphamhsgs@gmail.com"
+  },
+  "navigation": {
+    "home": "首页",
+    "about": "关于",
+    "faq": "常见问题",
+    "blog": "博客"
+  },
+  "home": {
+    "title": "打开 SQLite 数据库",
+    "subtitle": "上传 SQLite 数据库文件以查看和编辑其内容",
+    "dragDrop": "拖放您的 SQLite 文件到这里",
+    "supportedFormats": "支持的格式：.sqlite、.db（最大：10MB）",
+    "selectFile": "选择文件",
+    "chooseDifferent": "选择其他文件",
+    "uploading": "上传中...",
+    "or": "- 或 -",
+    "createNew": "创建新的空数据库",
+    "creating": "创建中...",
+    "createNewDesc": "这将创建一个带有示例表的新空 SQLite 数据库",
+    "tableView": "表视图",
+    "sqlCli": "SQL 命令行",
+    "tablesRefreshed": "表已刷新",
+    "tableListUpdated": "表列表已更新",
+    "error": "错误",
+    "newDbCreated": "新数据库已创建",
+    "newDbCreatedDesc": "已创建带有示例表的新 SQLite 数据库",
+    "invalidFileType": "无效的文件类型。只允许 .sqlite、.db 文件。",
+    "fileTooLarge": "文件太大。最大大小为 10MB。",
+    "failedToUpload": "上传文件失败",
+    "failedToCreate": "创建新数据库失败"
+  },
+  "about": {
+    "title": "关于 SQLite Editor Online",
+    "whatIs": "什么是 SQLite Editor Online？",
+    "whatIsDesc": "SQLite Editor Online 是一个功能强大的基于 Web 的 SQLite 数据库编辑器，允许您直接在浏览器中管理和操作 SQLite 数据库。无需安装 - 只需上传您的 SQLite 数据库文件并开始编辑。非常适合开发人员、数据库管理员以及任何需要使用 SQLite 数据库的人。",
+    "keyFeatures": "主要功能",
+    "sqlQueryEditor": "SQL 查询编辑器",
+    "sqlQueryEditorDesc": "使用语法高亮和错误检查执行自定义 SQL 查询",
+    "interactiveTable": "交互式表视图",
+    "interactiveTableDesc": "查看和编辑表数据，支持排序、过滤和分页",
+    "securePrivate": "安全和隐私",
+    "securePrivateDesc": "您的数据保留在浏览器中 - 没有服务器存储",
+    "exportOptions": "导出选项",
+    "exportOptionsDesc": "以各种格式导出数据，包括 CSV 和 JSON",
+    "supportProject": "支持项目",
+    "loveUsing": "喜欢使用 SQLite Editor Online？",
+    "supportDesc": "如果您发现 SQLite Editor Online 有用并希望支持其开发，请考虑捐赠。您的支持有助于维护和改进该项目，确保它对所有人免费开放。",
+    "sponsorGithub": "在 GitHub 上赞助",
+    "buyMeCoffee": "请我喝杯咖啡",
+    "scanToDonate": "扫描通过 Buy Me a Coffee 捐赠"
+  },
+  "faq": {
+    "title": "常见问题",
+    "subtitle": "查找有关 SQLite Editor Online 的常见问题的答案",
+    "stillQuestions": "还有问题？",
+    "stillQuestionsDesc": "如果您找不到要找的答案，请随时与我们联系或查看我们的综合指南。",
+    "tryNow": "立即尝试 SQLite Editor",
+    "gettingStarted": "入门指南",
+    "browseTutorials": "浏览教程",
+    "needMoreHelp": "需要更多帮助？",
+    "contactDesc": "直接联系我们获取技术支持或功能请求："
+  },
+  "export": {
+    "export": "导出",
+    "exportDb": "导出数据库"
+  }
+}
+

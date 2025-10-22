@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "SqlEditor",
+    "version": "Version 0.0.1",
+    "requestFeatures": "Neue Funktionen anfordern",
+    "email": "toanphamhsgs@gmail.com"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "about": "Über",
+    "faq": "FAQ",
+    "blog": "Blog"
+  },
+  "home": {
+    "title": "SQLite-Datenbank öffnen",
+    "subtitle": "Laden Sie eine SQLite-Datenbankdatei hoch, um deren Inhalt anzuzeigen und zu bearbeiten",
+    "dragDrop": "Ziehen Sie Ihre SQLite-Datei hierher",
+    "supportedFormats": "Unterstützte Formate: .sqlite, .db (Max: 10MB)",
+    "selectFile": "Datei auswählen",
+    "chooseDifferent": "Andere Datei wählen",
+    "uploading": "Wird hochgeladen...",
+    "or": "- ODER -",
+    "createNew": "Neue leere Datenbank erstellen",
+    "creating": "Wird erstellt...",
+    "createNewDesc": "Dies erstellt eine neue leere SQLite-Datenbank mit einer Beispieltabelle",
+    "tableView": "Tabellenansicht",
+    "sqlCli": "SQL-Befehlszeile",
+    "tablesRefreshed": "Tabellen aktualisiert",
+    "tableListUpdated": "Tabellenliste wurde aktualisiert",
+    "error": "Fehler",
+    "newDbCreated": "Neue Datenbank erstellt",
+    "newDbCreatedDesc": "Eine neue SQLite-Datenbank mit einer Beispieltabelle wurde erstellt",
+    "invalidFileType": "Ungültiger Dateityp. Nur .sqlite, .db Dateien sind erlaubt.",
+    "fileTooLarge": "Datei ist zu groß. Maximale Größe ist 10MB.",
+    "failedToUpload": "Datei-Upload fehlgeschlagen",
+    "failedToCreate": "Erstellen der neuen Datenbank fehlgeschlagen"
+  },
+  "about": {
+    "title": "Über SQLite Editor Online",
+    "whatIs": "Was ist SQLite Editor Online?",
+    "whatIsDesc": "SQLite Editor Online ist ein leistungsstarker, webbasierter SQLite-Datenbankbearbeiter, mit dem Sie Ihre SQLite-Datenbanken direkt in Ihrem Browser verwalten und mit ihnen interagieren können. Keine Installation erforderlich - laden Sie einfach Ihre SQLite-Datenbankdatei hoch und beginnen Sie mit der Bearbeitung. Perfekt für Entwickler, Datenbankadministratoren und alle, die mit SQLite-Datenbanken arbeiten müssen.",
+    "keyFeatures": "Hauptfunktionen",
+    "sqlQueryEditor": "SQL-Abfrage-Editor",
+    "sqlQueryEditorDesc": "Führen Sie benutzerdefinierte SQL-Abfragen mit Syntaxhervorhebung und Fehlerprüfung aus",
+    "interactiveTable": "Interaktive Tabellenansicht",
+    "interactiveTableDesc": "Anzeigen und Bearbeiten von Tabellendaten mit Sortierung, Filterung und Paginierung",
+    "securePrivate": "Sicher und privat",
+    "securePrivateDesc": "Ihre Daten bleiben in Ihrem Browser - keine Serverspeicherung",
+    "exportOptions": "Exportoptionen",
+    "exportOptionsDesc": "Exportieren Sie Ihre Daten in verschiedenen Formaten, einschließlich CSV und JSON",
+    "supportProject": "Projekt unterstützen",
+    "loveUsing": "Sie lieben SQLite Editor Online?",
+    "supportDesc": "Wenn Sie SQLite Editor Online hilfreich finden und seine Entwicklung unterstützen möchten, ziehen Sie eine Spende in Betracht. Ihre Unterstützung hilft, das Projekt zu pflegen und zu verbessern und stellt sicher, dass es für alle kostenlos und zugänglich bleibt.",
+    "sponsorGithub": "Auf GitHub sponsern",
+    "buyMeCoffee": "Kauf mir einen Kaffee",
+    "scanToDonate": "Scannen Sie, um über Buy Me a Coffee zu spenden"
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "subtitle": "Finden Sie Antworten auf häufige Fragen zu SQLite Editor Online",
+    "stillQuestions": "Haben Sie noch Fragen?",
+    "stillQuestionsDesc": "Wenn Sie die gesuchte Antwort nicht finden konnten, können Sie uns gerne kontaktieren oder unsere umfassenden Anleitungen lesen.",
+    "tryNow": "SQLite Editor jetzt ausprobieren",
+    "gettingStarted": "Erste Schritte Anleitung",
+    "browseTutorials": "Tutorials durchsuchen",
+    "needMoreHelp": "Benötigen Sie weitere Hilfe?",
+    "contactDesc": "Kontaktieren Sie uns direkt für technischen Support oder Funktionswünsche:"
+  },
+  "export": {
+    "export": "Exportieren",
+    "exportDb": "Datenbank exportieren"
+  }
+}
+
