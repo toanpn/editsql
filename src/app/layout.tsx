@@ -32,11 +32,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
     description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. Perfect for developers and database administrators.",
-    url: "https://www.sqleditor.online",
+    url: "https://litesql.online",
     siteName: "SQLite Editor Online",
     images: [
       {
-        url: "https://www.sqleditor.online/og-image.png",
+        url: "https://litesql.online/og-image.png",
         width: 1200,
         height: 630,
         alt: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
@@ -49,13 +49,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SQLite Editor Online - Free Web-Based SQLite Database Editor",
     description: "Edit SQLite databases online for free. A powerful web-based SQLite editor with features like table management, SQL query execution, and data export. Perfect for developers and database administrators.",
-    images: ["https://www.sqleditor.online/og-image.png"],
+    images: ["https://litesql.online/og-image.png"],
     creator: "@sqleditor",
     site: "@sqleditor",
   },
   alternates: {
     languages: {
-      'en-US': 'https://www.sqleditor.online',
+      'en-US': 'https://litesql.online',
     },
   },
   robots: {
@@ -120,7 +120,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "SQLite Editor Online",
-              "url": "https://www.sqleditor.online",
+              "url": "https://litesql.online",
               "description": "A free web-based SQLite database editor with features like table management, SQL query execution, and data export.",
               "applicationCategory": "DeveloperApplication",
               "operatingSystem": "Any",
@@ -146,8 +146,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "SQLite Editor Online",
-              "url": "https://www.sqleditor.online",
-              "logo": "https://www.sqleditor.online/logo.png",
+              "url": "https://litesql.online",
+              "logo": "https://litesql.online/logo.png",
               "sameAs": [
                 "https://twitter.com/sqleditor",
                 "https://github.com/sqleditor"
@@ -166,19 +166,19 @@ export default function RootLayout({
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": "https://www.sqleditor.online"
+                  "item": "https://litesql.online"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Blog",
-                  "item": "https://www.sqleditor.online/blog"
+                  "item": "https://litesql.online/blog"
                 },
                 {
                   "@type": "ListItem",
                   "position": 3,
                   "name": "About",
-                  "item": "https://www.sqleditor.online/about"
+                  "item": "https://litesql.online/about"
                 }
               ]
             }

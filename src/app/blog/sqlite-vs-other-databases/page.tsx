@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Compare SQLite with MySQL, PostgreSQL, and other databases. Learn when SQLite is the right choice for your project and when to consider alternatives.",
   keywords: "sqlite vs mysql, sqlite vs postgresql, database comparison, when to use sqlite, embedded database, serverless database",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/sqlite-vs-other-databases",
+    canonical: "https://litesql.online/blog/sqlite-vs-other-databases",
   },
   openGraph: {
     title: "SQLite vs. Other Databases: When to Use SQLite",
     description: "Compare SQLite with MySQL, PostgreSQL, and other databases. Learn when SQLite is the right choice for your project.",
-    url: "https://www.sqleditor.online/blog/sqlite-vs-other-databases",
+    url: "https://litesql.online/blog/sqlite-vs-other-databases",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-08-05",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/sqlite-vs-other-databases"
+              "@id": "https://litesql.online/blog/sqlite-vs-other-databases"
             }
           }
         `}

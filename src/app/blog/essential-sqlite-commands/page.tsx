@@ -7,15 +7,15 @@ export const metadata: Metadata = {
   description: "Master the 5 most important SQLite commands that will help you become more efficient with database management. Perfect for beginners and intermediate developers.",
   keywords: "sqlite commands, essential sqlite commands, sqlite select, sqlite insert, sqlite update, sqlite delete, sqlite create table",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/essential-sqlite-commands",
+    canonical: "https://litesql.online/blog/essential-sqlite-commands",
   },
   openGraph: {
     title: "5 Essential SQLite Commands Every Developer Should Know",
     description: "Master the 5 most important SQLite commands that will help you become more efficient with database management.",
-    url: "https://www.sqleditor.online/blog/essential-sqlite-commands",
+    url: "https://litesql.online/blog/essential-sqlite-commands",
     images: [
       {
-        url: "https://www.sqleditor.online/blog/essential-sqlite-commands.png",
+        url: "https://litesql.online/blog/essential-sqlite-commands.png",
         width: 1200,
         height: 630,
         alt: "5 Essential SQLite Commands Every Developer Should Know",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "5 Essential SQLite Commands Every Developer Should Know",
     description: "Master the 5 most important SQLite commands that will help you become more efficient with database management.",
-    images: ["https://www.sqleditor.online/blog/essential-sqlite-commands.png"],
+    images: ["https://litesql.online/blog/essential-sqlite-commands.png"],
   },
 };
 
@@ -41,7 +41,7 @@ export default function BlogPost() {
             "@type": "Article",
             "headline": "5 Essential SQLite Commands Every Developer Should Know",
             "description": "Master the 5 most important SQLite commands that will help you become more efficient with database management. Perfect for beginners and intermediate developers.",
-            "image": "https://www.sqleditor.online/blog/essential-sqlite-commands.png",
+            "image": "https://litesql.online/blog/essential-sqlite-commands.png",
             "author": {
               "@type": "Organization",
               "name": "SQLite Editor Online"
@@ -51,14 +51,14 @@ export default function BlogPost() {
               "name": "SQLite Editor Online",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://www.sqleditor.online/logo.png"
+                "url": "https://litesql.online/logo.png"
               }
             },
             "datePublished": "2023-10-15",
             "dateModified": "2023-10-15",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/essential-sqlite-commands"
+              "@id": "https://litesql.online/blog/essential-sqlite-commands"
             }
           }
         `}

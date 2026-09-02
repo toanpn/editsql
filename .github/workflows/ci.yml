@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        # next.config.ts sets eslint.ignoreDuringBuilds, so `npm run build`
+        # never surfaces a lint error. Running it here is the only place these
+        # are visible — but it stays non-blocking, because turning the existing
+        # backlog into a red pipeline would just teach everyone to ignore CI.
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Types
+        # Same reasoning as lint: typescript.ignoreBuildErrors is on, so tsc is
+        # advisory here rather than a gate.
+        run: npx tsc --noEmit
+        continue-on-error: true
+
+      - name: Build
+        # This one IS the gate. Deploy keys off CI succeeding, and a build that
+        # fails on the runner would fail identically inside the Docker build on
+        # the server — better to find out before the site is touched.
+        run: npm run build

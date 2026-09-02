@@ -3,8 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap locations
-Sitemap: https://www.sqleditor.online/sitemap.xml
-Sitemap: https://www.sqleditor.online/site-sitemap.xml
+Sitemap: https://litesql.online/sitemap.xml
 
 # Block crawling of specific files and directories if needed
 Disallow: /api/

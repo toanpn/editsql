@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Complete step-by-step tutorial on how to use our free online SQLite editor. Learn to upload, edit, query, and export SQLite databases in your browser.",
   keywords: "sqlite editor tutorial, sqlite editor guide, how to use sqlite editor, online database editor, sqlite browser tool",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/getting-started-sqlite-editor",
+    canonical: "https://litesql.online/blog/getting-started-sqlite-editor",
   },
   openGraph: {
     title: "Getting Started with SQLite Editor Online - A Complete Guide",
     description: "Complete step-by-step tutorial on how to use our free online SQLite editor. Learn to upload, edit, query, and export SQLite databases.",
-    url: "https://www.sqleditor.online/blog/getting-started-sqlite-editor",
+    url: "https://litesql.online/blog/getting-started-sqlite-editor",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-07-12",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/getting-started-sqlite-editor"
+              "@id": "https://litesql.online/blog/getting-started-sqlite-editor"
             }
           }
         `}

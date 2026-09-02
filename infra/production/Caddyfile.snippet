@@ -1,0 +1,34 @@
+# The vhost blocks litesql.online contributes to the SHARED Caddyfile on the
+# origin box, /srv/stack/Caddyfile. That file also serves sautruyen, so it is
+# not owned by this repo — the tracked copy lives in the sautruyen repo at
+# infra/production/Caddyfile. This snippet exists so a change to the litesql
+# half is reviewable here; after editing it, apply it to both.
+
+# www redirects to the apex rather than serving it. Two hostnames serving the
+# same HTML splits Google's signals between them, and every canonical tag in
+# src/app points at the apex.
+www.litesql.online {
+	redir https://litesql.online{uri} permanent
+}
+
+litesql.online {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "SAMEORIGIN"
+		-Server
+	}
+
+	# Uploads are capped at 10MB in the app; 20MB here leaves room for the
+	# multipart envelope while still refusing a body that could fill the disk.
+	# request_body is its own directive, not a reverse_proxy subdirective.
+	request_body {
+		max_size 20MB
+	}
+
+	# 3100, not 3000: sautruyen's Next server already holds 3000 on this box.
+	reverse_proxy 127.0.0.1:3100
+}

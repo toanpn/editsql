@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Discover proven techniques to optimize SQLite database performance. Learn indexing strategies, query optimization, and configuration tweaks for faster SQLite operations.",
   keywords: "sqlite performance, sqlite optimization, sqlite indexing, sqlite performance tuning, database optimization, sqlite speed",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/optimize-sqlite-performance",
+    canonical: "https://litesql.online/blog/optimize-sqlite-performance",
   },
   openGraph: {
     title: "How to Optimize Your SQLite Database for Better Performance",
     description: "Discover proven techniques to optimize SQLite database performance. Learn indexing strategies, query optimization, and configuration tweaks.",
-    url: "https://www.sqleditor.online/blog/optimize-sqlite-performance",
+    url: "https://litesql.online/blog/optimize-sqlite-performance",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-09-20",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/optimize-sqlite-performance"
+              "@id": "https://litesql.online/blog/optimize-sqlite-performance"
             }
           }
         `}

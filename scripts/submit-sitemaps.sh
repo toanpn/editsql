@@ -4,7 +4,7 @@
 # Usage: ./submit-sitemaps.sh
 
 # Set your site URL
-SITE_URL="https://www.sqleditor.online"
+SITE_URL="https://litesql.online"
 
 # Sitemaps to submit
 SITEMAPS=(

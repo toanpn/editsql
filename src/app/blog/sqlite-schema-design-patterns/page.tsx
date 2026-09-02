@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Explore proven database design patterns and normalization techniques specifically for SQLite applications. Learn to create efficient, maintainable database schemas.",
   keywords: "sqlite schema design, database design patterns, sqlite normalization, database architecture, sqlite best practices",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/sqlite-schema-design-patterns",
+    canonical: "https://litesql.online/blog/sqlite-schema-design-patterns",
   },
   openGraph: {
     title: "Database Schema Design Patterns for SQLite",
     description: "Explore proven database design patterns and normalization techniques specifically for SQLite applications.",
-    url: "https://www.sqleditor.online/blog/sqlite-schema-design-patterns",
+    url: "https://litesql.online/blog/sqlite-schema-design-patterns",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-11-18",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/sqlite-schema-design-patterns"
+              "@id": "https://litesql.online/blog/sqlite-schema-design-patterns"
             }
           }
         `}

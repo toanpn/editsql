@@ -2,7 +2,7 @@
 
 A web application to upload, view, edit, query, and export SQLite database files.
 
-> 🌐 Try the online version at [sqleditor.online](https://sqleditor.online/)
+> 🌐 Try the online version at [litesql.online](https://litesql.online/)
 
 ## 🔥 Features
 

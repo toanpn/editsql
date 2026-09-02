@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Master advanced SQLite query techniques for data analysis. Learn window functions, CTEs, JSON operations, and complex analytical queries with practical examples.",
   keywords: "advanced sqlite queries, sqlite data analysis, sqlite window functions, sqlite CTE, sqlite analytics, complex sql queries",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/advanced-sqlite-queries",
+    canonical: "https://litesql.online/blog/advanced-sqlite-queries",
   },
   openGraph: {
     title: "Advanced SQLite Queries for Data Analysis",
     description: "Master advanced SQLite query techniques for data analysis. Learn window functions, CTEs, JSON operations, and complex analytical queries.",
-    url: "https://www.sqleditor.online/blog/advanced-sqlite-queries",
+    url: "https://litesql.online/blog/advanced-sqlite-queries",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-06-28",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/advanced-sqlite-queries"
+              "@id": "https://litesql.online/blog/advanced-sqlite-queries"
             }
           }
         `}

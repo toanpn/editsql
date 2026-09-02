@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Learn essential security practices for SQLite databases in web applications. Prevent SQL injection, secure file access, and implement proper authentication.",
   keywords: "sqlite security, sql injection prevention, database security, sqlite best practices, web application security",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/sqlite-security-best-practices",
+    canonical: "https://litesql.online/blog/sqlite-security-best-practices",
   },
   openGraph: {
     title: "SQLite Security Best Practices for Web Applications",
     description: "Learn essential security practices for SQLite databases in web applications. Prevent SQL injection, secure file access, and implement proper authentication.",
-    url: "https://www.sqleditor.online/blog/sqlite-security-best-practices",
+    url: "https://litesql.online/blog/sqlite-security-best-practices",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-12-01",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/sqlite-security-best-practices"
+              "@id": "https://litesql.online/blog/sqlite-security-best-practices"
             }
           }
         `}

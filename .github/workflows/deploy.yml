@@ -1,0 +1,91 @@
+name: Deploy
+
+# Deploy only runs for a commit whose CI already went green. `workflow_run` is
+# the only way to bridge two workflows while keeping that causal link — folding
+# deploy into ci.yml with `needs:` would make every pull request carry a skipped
+# deploy job and would tangle deploy history into test history.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  # Manual redeploy, for when something was changed on the server and there is
+  # no new commit to push.
+  workflow_dispatch:
+
+# Two pushes in quick succession must not build concurrently: they share one
+# checkout and one container name on the box, and the box has under 10GB free.
+# cancel-in-progress is false because interrupting a deploy mid-swap is worse
+# than queueing behind it.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # workflow_run fires on failed CI runs too; this condition is the only thing
+    # standing between a red build and production.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: production
+      url: https://litesql.online
+
+    steps:
+      - name: SSH key and pinned host key
+        # The secret travels through env rather than being interpolated into the
+        # script body: `${{ }}` is substituted as text *before* the shell runs,
+        # so a value containing shell metacharacters would be executed instead
+        # of treated as data.
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          if [ -z "$DEPLOY_SSH_KEY" ]; then
+            echo "::error::DEPLOY_SSH_KEY secret is missing — see infra/production/README.md"
+            exit 1
+          fi
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          # Pinning beats StrictHostKeyChecking=no. Unpinned, anyone able to
+          # occupy the route to this IP receives the runner's SSH session — and
+          # the deploy key with it.
+          # Fingerprint: SHA256:MafPVCdc2RzSjQQd60RuWAaJzQutZ0Q+B1uYWHdItvM
+          cat > ~/.ssh/known_hosts <<'EOF'
+          185.202.236.176 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOm6sVPE/w/QgGj5gKjc2WYwc4dgUBKzZfF6fLx+UDHa
+          EOF
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy
+        # This key is pinned to `command="/srv/deploy-editsql.sh"` in the
+        # server's authorized_keys, so whatever command is sent here is
+        # discarded and deploy-editsql.sh is what runs. `true` is written out to
+        # make it plain that the client side decides nothing.
+        run: |
+          ssh -i ~/.ssh/deploy \
+              -o IdentitiesOnly=yes \
+              -o BatchMode=yes \
+              -o ConnectTimeout=30 \
+              -o ServerAliveInterval=20 \
+              root@185.202.236.176 true
+
+      - name: Verify the site actually serves
+        # deploy-editsql.sh already checked 127.0.0.1:3100 on the box. This step
+        # covers what it cannot see from in there: Caddy, TLS and DNS — the path
+        # a real visitor takes.
+        run: |
+          fail=0
+          check() {
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 "$1")
+            printf '%-52s %s\n' "$1" "$code"
+            [ "$code" = "$2" ] || fail=1
+          }
+          check https://litesql.online/ 200
+          check https://litesql.online/faq 200
+          check https://litesql.online/blog 200
+          check https://litesql.online/robots.txt 200
+          [ "$fail" = "0" ] || { echo "::error::site is not serving correctly after deploy"; exit 1; }

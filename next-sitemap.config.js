@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://www.sqleditor.online',
+  siteUrl: 'https://litesql.online',
   generateRobotsTxt: false, // Disable auto-generation to use custom robots.txt
   robotsTxtOptions: {
     policies: [
@@ -9,10 +9,12 @@ module.exports = {
         allow: '/',
       },
     ],
-    additionalSitemaps: [
-      'https://www.sqleditor.online/sitemap.xml',
-      'https://www.sqleditor.online/blog-sitemap.xml',
-    ],
+    // Deliberately empty. This list previously named sitemap.xml (the index
+    // itself, so it referenced itself) and blog-sitemap.xml, which has never
+    // existed and returned 404. sitemap-0.xml, generated from the build
+    // manifest below, already covers every route including all eight blog
+    // posts, so there is nothing left to add by hand.
+    additionalSitemaps: [],
   },
   changefreq: 'weekly',
   priority: 0.7,

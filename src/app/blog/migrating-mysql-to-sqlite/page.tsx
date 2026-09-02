@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Step-by-step guide to migrating your MySQL database to SQLite, including schema conversion, data transfer, and application code updates.",
   keywords: "mysql to sqlite migration, database migration, mysql sqlite conversion, database transfer guide",
   alternates: {
-    canonical: "https://www.sqleditor.online/blog/migrating-mysql-to-sqlite",
+    canonical: "https://litesql.online/blog/migrating-mysql-to-sqlite",
   },
   openGraph: {
     title: "Migrating from MySQL to SQLite: A Complete Guide",
     description: "Step-by-step guide to migrating your MySQL database to SQLite, including schema conversion, data transfer, and application code updates.",
-    url: "https://www.sqleditor.online/blog/migrating-mysql-to-sqlite",
+    url: "https://litesql.online/blog/migrating-mysql-to-sqlite",
   },
 };
 
@@ -38,7 +38,7 @@ export default function BlogPost() {
             "dateModified": "2023-10-30",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://www.sqleditor.online/blog/migrating-mysql-to-sqlite"
+              "@id": "https://litesql.online/blog/migrating-mysql-to-sqlite"
             }
           }
         `}
