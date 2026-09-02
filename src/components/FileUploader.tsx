@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2, Upload, Database } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
+import { useTranslations } from 'next-intl';
 
-// Maximum file size: 10MB (in bytes)
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_FILE_TYPES = [".sqlite", ".db"];
 
@@ -16,6 +16,7 @@ interface FileUploaderProps {
 }
 
 export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
+  const t = useTranslations('home');
   // State to track if a file is being dragged over
   const [isDragging, setIsDragging] = useState(false);
   // State to store the selected file
@@ -30,17 +31,15 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
     // Reset previous errors
     setError(null);
     
-    // Check file extension
     const fileName = file.name.toLowerCase();
     const isValidType = ALLOWED_FILE_TYPES.some(ext => fileName.endsWith(ext));
     if (!isValidType) {
-      setError(`Invalid file type. Only ${ALLOWED_FILE_TYPES.join(", ")} files are allowed.`);
+      setError(t('invalidFileType'));
       return false;
     }
     
-    // Check file size
     if (file.size > MAX_FILE_SIZE) {
-      setError(`File is too large. Maximum size is 10MB.`);
+      setError(t('fileTooLarge'));
       return false;
     }
     
@@ -98,9 +97,9 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
   return (
     <div className="w-full flex flex-col items-center space-y-6">
       <div className="text-center mb-2">
-        <h2 className="text-2xl font-bold mb-2">Open SQLite Database</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('title')}</h2>
         <p className="text-muted-foreground">
-          Upload a SQLite database file to view and edit its contents
+          {t('subtitle')}
         </p>
       </div>
 
@@ -131,10 +130,10 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
           <>
             <Upload className="h-10 w-10 text-muted-foreground mb-2" />
             <p className="text-center text-lg font-medium">
-              Drag & drop your SQLite file here
+              {t('dragDrop')}
             </p>
             <p className="text-sm text-muted-foreground">
-              Supported formats: {ALLOWED_FILE_TYPES.join(", ")} (Max: 10MB)
+              {t('supportedFormats')}
             </p>
           </>
         )}
@@ -164,10 +163,10 @@ export const FileUploader = ({ onFileUpload }: FileUploaderProps) => {
           {isUploading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Uploading...
+              {t('uploading')}
             </>
           ) : (
-            selectedFile ? "Choose Different File" : "Select File"
+            selectedFile ? t('chooseDifferent') : t('selectFile')
           )}
         </Button>
       </div>

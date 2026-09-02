@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Loader2, FileDown } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface ExportButtonProps {
   className?: string;
 }
 
 export const ExportButton = ({ className = "" }: ExportButtonProps) => {
+  const t = useTranslations('export');
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
@@ -77,12 +79,12 @@ export const ExportButton = ({ className = "" }: ExportButtonProps) => {
       {isExporting ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          <span>Exporting...</span>
+          <span>{t('export')}...</span>
         </>
       ) : (
         <>
           <FileDown className="mr-2 h-4 w-4" />
-          <span>Export Database</span>
+          <span>{t('exportDb')}</span>
         </>
       )}
     </Button>

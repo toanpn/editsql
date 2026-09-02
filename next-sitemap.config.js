@@ -22,10 +22,28 @@ module.exports = {
   exclude: ['/api/*', '/_next/*', '/404', '/500'],
   generateIndexSitemap: true,
   outDir: 'public',
-  additionalPaths: async (config) => [
-    await config.transform(config, '/blog/essential-sqlite-commands'),
-    // Add other blog post paths here as you create them
-  ],
+  // Every route now lives under src/app/[locale], so next-sitemap sees only a
+  // dynamic segment in the build manifest and cannot enumerate pages on its
+  // own — left alone it emits a sitemap containing one URL and not the
+  // homepage. These are the default-locale paths, which localePrefix:
+  // 'as-needed' serves unprefixed. The prefixed locales are deliberately
+  // absent: every one of them currently declares the unprefixed URL as its
+  // canonical, so listing them would ask Google to crawl pages that disclaim
+  // themselves. Fix the canonicals first, then add them here.
+  additionalPaths: async (config) => Promise.all([
+    '/',
+    '/about',
+    '/faq',
+    '/blog',
+    '/blog/advanced-sqlite-queries',
+    '/blog/essential-sqlite-commands',
+    '/blog/getting-started-sqlite-editor',
+    '/blog/migrating-mysql-to-sqlite',
+    '/blog/optimize-sqlite-performance',
+    '/blog/sqlite-schema-design-patterns',
+    '/blog/sqlite-security-best-practices',
+    '/blog/sqlite-vs-other-databases',
+  ].map((path) => config.transform(config, path))),
   transform: async (config, path) => {
     // Custom transformation for URLs
     // Set higher priority for important pages

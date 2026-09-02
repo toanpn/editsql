@@ -1,13 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import Script from "next/script";
-import { Metadata } from "next";
-import { Database } from "lucide-react"; 
-
-export const metadata: Metadata = {
-  title: "SQLite Editor Online FAQ - Frequently Asked Questions",
-  description: "Find answers to frequently asked questions about SQLite Editor Online. Learn how to use our free SQLite database editor, troubleshoot common issues, and get the most out of our tools.",
-  keywords: "sqlite editor faq, sqlite questions, sqlite database questions, sqlite editor help, sqlite editor tutorial, sqlite editor guide",
-};
+import { Database } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useTranslations } from 'next-intl'; 
 
 const faqs = [
   {
@@ -109,6 +106,8 @@ const faqs = [
 ];
 
 export default function FAQPage() {
+  const t = useTranslations();
+  
   return (
     <main className="min-h-screen flex flex-col">
       {/* Header */}
@@ -116,16 +115,17 @@ export default function FAQPage() {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
             <Database className="h-5 w-5 text-primary" />
-            <h1 className="font-bold text-xl">SqlEditor</h1>
+            <h1 className="font-bold text-xl">{t('common.appName')}</h1>
           </Link>
         </div>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex space-x-4">
-            <Link href="/" className="text-sm hover:text-primary">Home</Link>
-            <Link href="/about" className="text-sm hover:text-primary">About</Link>
-            <Link href="/faq" className="text-sm font-medium text-primary">FAQ</Link>
-            <Link href="/blog" className="text-sm hover:text-primary">Blog</Link>
+            <Link href="/" className="text-sm hover:text-primary">{t('navigation.home')}</Link>
+            <Link href="/about" className="text-sm hover:text-primary">{t('navigation.about')}</Link>
+            <Link href="/faq" className="text-sm font-medium text-primary">{t('navigation.faq')}</Link>
+            <Link href="/blog" className="text-sm hover:text-primary">{t('navigation.blog')}</Link>
           </nav>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -133,9 +133,9 @@ export default function FAQPage() {
       <div className="flex-1 py-12 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="max-w-4xl mx-auto">
           <div className="mb-12 text-center">
-            <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('faq.title')}</h1>
             <p className="text-xl text-muted-foreground">
-              Find answers to common questions about SQLite Editor Online
+              {t('faq.subtitle')}
             </p>
           </div>
 
@@ -149,41 +149,41 @@ export default function FAQPage() {
           </div>
 
           <div className="mt-16 text-center">
-            <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('faq.stillQuestions')}</h2>
             <p className="mb-6 text-muted-foreground">
-              If you couldn&apos;t find the answer you were looking for, feel free to contact us or check out our comprehensive guides.
+              {t('faq.stillQuestionsDesc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
               >
-                Try SQLite Editor Now
+                {t('faq.tryNow')}
               </Link>
               <Link 
                 href="/blog/getting-started-sqlite-editor"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium"
               >
-                Getting Started Guide
+                {t('faq.gettingStarted')}
               </Link>
               <Link 
                 href="/blog"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary text-primary hover:bg-primary/10 font-medium"
               >
-                Browse Tutorials
+                {t('faq.browseTutorials')}
               </Link>
             </div>
             
             <div className="mt-8 p-6 border rounded-lg bg-muted/30">
-              <h3 className="text-lg font-semibold mb-3">Need More Help?</h3>
+              <h3 className="text-lg font-semibold mb-3">{t('faq.needMoreHelp')}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Contact us directly for technical support or feature requests:
+                {t('faq.contactDesc')}
               </p>
               <a 
-                href="mailto:toanphamhsgs@gmail.com" 
+                href={`mailto:${t('common.email')}`}
                 className="inline-flex items-center text-primary hover:underline font-medium"
               >
-                toanphamhsgs@gmail.com
+                {t('common.email')}
               </a>
             </div>
           </div>
@@ -194,14 +194,14 @@ export default function FAQPage() {
       <footer className="border-t py-6 px-4 text-center text-xs text-muted-foreground bg-muted/30">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-center space-x-6 mb-4">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-            <Link href="/about" className="hover:text-primary transition-colors">About</Link>
-            <Link href="/faq" className="text-primary font-medium">FAQ</Link>
-            <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
+            <Link href="/" className="hover:text-primary transition-colors">{t('navigation.home')}</Link>
+            <Link href="/about" className="hover:text-primary transition-colors">{t('navigation.about')}</Link>
+            <Link href="/faq" className="text-primary font-medium">{t('navigation.faq')}</Link>
+            <Link href="/blog" className="hover:text-primary transition-colors">{t('navigation.blog')}</Link>
           </div>
-          <p className="mb-2">SQLite Editor Online - Version 0.0.1</p>
+          <p className="mb-2">{t('common.appName')} - {t('common.version')}</p>
           <p>
-            Request new features: <a href="mailto:toanphamhsgs@gmail.com" className="text-primary hover:underline">toanphamhsgs@gmail.com</a>
+            {t('common.requestFeatures')}: <a href={`mailto:${t('common.email')}`} className="text-primary hover:underline">{t('common.email')}</a>
           </p>
         </div>
       </footer>
