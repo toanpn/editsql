@@ -30,14 +30,33 @@ if [ "$free_mb" -lt "$MIN_FREE_MB" ]; then
 fi
 
 echo "### fetching origin/main"
-# protocol.version=0 is not a style choice. On this box git's v2 negotiation
-# against github.com fails with "expected flush after ref listing" and then
-# falls back to prompting for a username, which in a non-interactive deploy
-# reads as a permission error on a repo that is in fact public. curl reaches
-# the same endpoint fine and v0 works, so the fault is in v2 over this host's
-# network path. Pinning it here rather than in the repo's local config keeps
-# the script working even if /srv/editsql is ever re-cloned by hand.
-git -c protocol.version=0 fetch --quiet origin main
+# Two separate problems are being worked around here, both of which surface as
+# the same misleading message: git asking for a username on a public repo.
+#
+# protocol.version=0 — this host cannot negotiate git's v2 against github.com.
+# It fails with "expected flush after ref listing" and then falls back to
+# asking for credentials. curl reaches the identical endpoint fine, so the
+# fault is in v2 over this host's network path. Pinned here rather than in the
+# repo's local config so the script survives a manual re-clone.
+#
+# The retries — even on v0, a fetch occasionally comes back needing auth and
+# then succeeds moments later, which is what anonymous rate limiting from a
+# shared VPS address looks like. Without retries a throttled minute fails a
+# deploy that has nothing wrong with it. Switching origin to an authenticated
+# SSH deploy key removes the cause; see README.md.
+fetched=0
+for attempt in 1 2 3 4 5; do
+  if git -c protocol.version=0 fetch --quiet origin main 2>/tmp/editsql-fetch.err; then
+    fetched=1
+    break
+  fi
+  echo "fetch attempt ${attempt} failed: $(head -1 /tmp/editsql-fetch.err)" >&2
+  sleep $((attempt * 5))
+done
+if [ "$fetched" != "1" ]; then
+  echo "could not fetch origin/main after 5 attempts — deploy ABORTED, site untouched" >&2
+  exit 1
+fi
 git reset --hard --quiet origin/main
 echo "now at: $(git log -1 --oneline)"
 
@@ -76,8 +95,16 @@ for i in $(seq 1 45); do
   sleep 1
 done
 
-echo "### reclaiming layers orphaned by this build"
+echo "### reclaiming space"
+# Two different caches, and only pruning the first is why this box crept from
+# 92% to 95% full on the very first deploy. `image prune` drops images the new
+# build superseded; the buildkit cache is separate and grew to 2.5GB on its
+# own. Capping it at 1GB keeps the npm-install layer warm — the expensive one,
+# and the one that only changes when package-lock.json does — while refusing to
+# let intermediate layers accumulate on a filesystem shared with sautruyen's
+# 52GB of data.
 docker image prune -f >/dev/null
+docker builder prune -f --max-used-space 1GB >/dev/null
 df -h /
 
 echo "### done: $(git log -1 --format='%h %s')"
